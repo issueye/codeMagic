@@ -1,7 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: "class",
-  content: ["./index.html", "./src/**/*.{tsx,jsx,vue}"],
+  corePlugins: {
+    preflight: false,
+  },
+  content: ["./index.html", "./src/**/*.{tsx,jsx,js,vue}"],
   theme: {
     extend: {
       colors: {
@@ -12,5 +15,5 @@ export default {
       }
     },
   },
-  plugins: [require("@tailwindcss/forms"), require("@tailwindcss/typography")],
+  plugins: [],
 };

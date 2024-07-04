@@ -5,6 +5,7 @@ import (
 	"log"
 	"runtime"
 
+	"github.com/issueye/code_magic/backend/initialize"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/logger"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -20,16 +21,19 @@ var assets embed.FS
 var icon []byte
 
 func main() {
-	// Create an instance of the app structure
+	// 初始化程序
+	initialize.Initialize()
+
+	// 创建一个 app 对象
 	app := NewApp()
 
-	// Create application with options
+	// 创建一个wails app
 	err := wails.Run(&options.App{
-		Title:             "code_magic",
-		Width:             1024,
-		Height:            768,
-		MinWidth:          1024,
-		MinHeight:         768,
+		Title:     "code_magic",
+		Width:     1024,
+		Height:    768,
+		MinWidth:  1024,
+		MinHeight: 768,
 		// MaxWidth:          1280,
 		// MaxHeight:         800,
 		DisableResize:     false,

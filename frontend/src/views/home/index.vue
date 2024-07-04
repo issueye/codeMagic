@@ -1,5 +1,5 @@
 <template>
-  <BsHeader title="用户管理" description="用户管理">
+  <BsHeader title="数据模型" description="通过数据模型生成代码">
     <template #actions>
       <el-button type="primary" @click="onAddClick">添加</el-button>
     </template>
@@ -112,42 +112,23 @@
         :rules="rules"
         ref="dataFormRef"
       >
-        <el-form-item label="账户" prop="account">
+        <el-form-item label="标题" prop="title">
           <el-input
-            v-model="dataForm.account"
-            placeholder="请输入账户"
+            v-model="dataForm.title"
+            placeholder="请输入数据模型标题"
             clearable
           />
         </el-form-item>
-        <el-form-item label="姓名" prop="name">
-          <el-input
-            v-model="dataForm.name"
-            placeholder="请输入账户"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="用户组" prop="groupId">
-          <el-select
-            v-model="dataForm.groupId"
-            value-key=""
-            placeholder=""
-            clearable
-            filterable
-          >
-            <!-- <el-option
-              v-for="item in groupTableData"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            >
-            </el-option> -->
+        <el-form-item label="生成类型" prop="makeType">
+          <el-select v-model="dataForm.makeType" placeholder="请选择生成类型">
+            <el-option :value="0" label="手动生成" />
+            <el-option :value="1" label="数据源" />
           </el-select>
         </el-form-item>
         <el-form-item label="备注">
           <el-input
             v-model="dataForm.mark"
             placeholder="请输入备注"
-            :disabled="dataForm.sys === 1 && operationType === 1"
             type="textarea"
             :row="2"
             clearable
@@ -160,12 +141,11 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from "vue";
-
 import { ElMessage, ElMessageBox } from "element-plus";
 
-const nameTitle = "用户信息";
+const nameTitle = "数据模型";
 // 标题
-const title = ref("用户信息");
+const title = ref("数据模型");
 // 显示弹窗
 const visible = ref(false);
 // 操作类型
@@ -192,17 +172,14 @@ const form = reactive({
 // 弹窗表单
 const dataForm = reactive({
   id: "",
-  account: "",
-  name: "",
-  groupId: "",
-  sys: 0,
+  title: "",
+  makeType: 0,
   mark: "",
 });
 
 onMounted(() => {});
 
 const tableData = ref([]);
-// const groupTableData = ref([]);
 
 const getData = async () => {
   // let sendData = {
@@ -220,20 +197,16 @@ const getData = async () => {
 // 重置表单数据
 const resetForm = () => {
   dataForm.id = "";
-  dataForm.account = "";
-  dataForm.name = "";
-  dataForm.groupId = "";
-  dataForm.sys = 0;
+  dataForm.title = "";
+  dataForm.makeType = 0;
   dataForm.mark = "";
 };
 
 // 赋值表单数据
 const setForm = (value: any) => {
   dataForm.id = value.id;
-  dataForm.account = value.account;
-  dataForm.name = value.name;
-  dataForm.groupId = value.groupId;
-  dataForm.sys = value.sys;
+  dataForm.title = value.title;
+  dataForm.makeType = value.makeType;
   dataForm.mark = value.mark;
 };
 
@@ -269,7 +242,7 @@ const onEditClick = (value: any) => {
 };
 
 const onEditStateClick = async (value: any) => {
-  console.log('value', value);
+  console.log("value", value);
   // const res = await apiUserModifyState(value.id);
   // if (res.code !== 200) {
   //   ElMessage.error(res.message);
@@ -281,7 +254,7 @@ const onEditStateClick = async (value: any) => {
 };
 
 const onDeleteClick = (value: any) => {
-  console.log('value', value);
+  console.log("value", value);
 
   ElMessageBox.confirm("请确认是否要删除数据？", "警告", {
     confirmButtonText: "确定",
@@ -294,7 +267,6 @@ const onDeleteClick = (value: any) => {
       //   ElMessage.error(res.message);
       //   return;
       // }
-
       // ElMessage.success("删除成功");
       // getData();
     })
@@ -319,7 +291,7 @@ const onSave = () => {
           // visible.value = false;
           // getData();
           // break;
-            break;
+          break;
         }
 
         case 1: {
