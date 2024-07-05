@@ -20,7 +20,7 @@
         </el-form-item>
       </el-form>
 
-      <div class="table-box">
+      <div class="h-[calc(100% - 60px)]">
         <el-table
           border
           :data="tableData"
@@ -29,26 +29,15 @@
           stripe
         >
           <el-table-column prop="id" label="编码" width="150" show-overflow />
-          <el-table-column prop="account" label="账户" width="130" />
-          <el-table-column prop="name" label="姓名" width="150" />
-          <el-table-column prop="groupName" label="用户组" width="150" />
-          <el-table-column prop="mark" label="备注" />
-          <el-table-column
-            prop="state"
-            label="状态"
-            width="70"
-            align="center"
-            fixed="right"
-          >
+          <el-table-column prop="title" label="标题" width="150" show-overflow />
+          <el-table-column prop="makeType" label="生成类型" width="90" show-overflow>
             <template v-slot="{ row }">
-              <el-tag
-                effect="plain"
-                :type="row.state === 1 ? 'success' : 'danger'"
-              >
-                {{ row.state === 1 ? "启用" : "停用" }}
+              <el-tag effect="plain" :type="row.makeType === 1 ? 'success' : 'danger'">
+                {{ row.makeType === 1 ? "数据源" : "手动生成" }}
               </el-tag>
             </template>
           </el-table-column>
+          <el-table-column prop="mark" label="备注" show-overflow />
           <el-table-column
             label="操作"
             width="190"
@@ -60,8 +49,8 @@
                 type="primary"
                 link
                 size="small"
-                @click="onEditStateClick(row)"
-                >{{ row.state === 1 ? "停用" : "启用" }}</el-button
+                @click="onEditClick(row)"
+                >编辑模型</el-button
               >
               <el-button
                 type="primary"
@@ -142,6 +131,9 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
+import { GetDataModelList, CreateDataModel, DeleteDataModel, ModifyDataModel } from '../../../wailsjs/go/main/DataModel';
+import { model, repository } from "../../../wailsjs/go/models";
+import { Ref } from "vue";
 
 const nameTitle = "数据模型";
 // 标题
@@ -179,19 +171,11 @@ const dataForm = reactive({
 
 onMounted(() => {});
 
-const tableData = ref([]);
+const tableData:Ref<model.DataModel[]> = ref([]);
 
 const getData = async () => {
-  // let sendData = {
-  //   pageSize: pageSize.value,
-  //   pageNum: pageNum.value,
-  //   condition: form.condition,
-  // };
-  // let res = await apiUserList(sendData);
-  // if (res.code === 200) {
-  //   tableData.value = res.data;
-  //   total.value = res.pageInfo.total;
-  // }
+  const data = await GetDataModelList(form.condition, pageNum.value, pageSize.value);
+  tableData.value = data;
 };
 
 // 重置表单数据
@@ -241,20 +225,8 @@ const onEditClick = (value: any) => {
   visible.value = true;
 };
 
-const onEditStateClick = async (value: any) => {
-  console.log("value", value);
-  // const res = await apiUserModifyState(value.id);
-  // if (res.code !== 200) {
-  //   ElMessage.error(res.message);
-  //   return;
-  // }
-
-  // ElMessage.success(res.message);
-  // getData();
-};
-
 const onDeleteClick = (value: any) => {
-  console.log("value", value);
+  console.log("value", value.value);
 
   ElMessageBox.confirm("请确认是否要删除数据？", "警告", {
     confirmButtonText: "确定",
@@ -262,13 +234,8 @@ const onDeleteClick = (value: any) => {
     type: "warning",
   })
     .then(async () => {
-      // let res = await apiUserDelete(value.id);
-      // if (res.code !== 200) {
-      //   ElMessage.error(res.message);
-      //   return;
-      // }
-      // ElMessage.success("删除成功");
-      // getData();
+      await DeleteDataModel(value.id);
+      getData();
     })
     .catch(() => {
       ElMessage.info("取消删除");
@@ -281,29 +248,24 @@ const onSave = () => {
     if (valid) {
       switch (operationType.value) {
         case 0: {
-          // const res = await apiUserCreate(dataForm);
-          // if (res.code !== 200) {
-          //   ElMessage.error(res.message);
-          //   return;
-          // }
+          let data = repository.RequestCreateDataModel.createFrom({
+            title: dataForm.title,
+            makeType: dataForm.makeType,
+            mark: dataForm.mark,
+          })
 
-          // ElMessage.success(res.message);
-          // visible.value = false;
-          // getData();
-          // break;
+          await CreateDataModel(data);
+          visible.value = false;
+          getData();
           break;
         }
 
         case 1: {
-          // const res = await apiUserModify(dataForm);
-          // if (res.code !== 200) {
-          //   ElMessage.error(res.message);
-          //   return;
-          // }
-
+          let data = repository.RequestModifyDataModel.createFrom(dataForm)
+          await ModifyDataModel(data);
           // ElMessage.success(res.message);
-          // visible.value = false;
-          // getData();
+          visible.value = false;
+          getData();
           break;
         }
       }
@@ -338,8 +300,3 @@ const onClose = () => {
 };
 </script>
 
-<style lang="scss">
-.table-box {
-  height: calc(100% - 45px);
-}
-</style>

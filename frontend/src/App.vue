@@ -68,7 +68,7 @@ const isMaximised = ref(false);
       <!-- windows 定制化窗口按钮 -->
       <div
         v-if="isNotMac"
-        class="flex h-8 bg-gray-400"
+        class="flex h-8 bg-[#DAE5EC]"
         style="--wails-draggable: drag"
       >
         <div class="grow"></div>

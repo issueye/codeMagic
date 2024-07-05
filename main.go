@@ -57,6 +57,7 @@ func main() {
 		WindowStartState: options.Normal,
 		Bind: []interface{}{
 			app,
+			NewDataModel(),
 		},
 		// Windows platform specific options
 		Windows: &windows.Options{

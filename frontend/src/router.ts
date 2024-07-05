@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from "./views/home/index.vue";
 import Root from "./views/Root.vue";
 import Dataset from './views/dataset/index.vue';
+import DataModel from './views/data_model/index.vue';
 import Template from './views/template/index.vue';
 import Login from "./views/Login.vue";
 
@@ -12,6 +13,7 @@ const router = createRouter({
     { path: "/login", name: "login", component: Login },
     { path: "/home", name: "home", component: Home },
     { path: "/datasets", component: Dataset },
+    { path: "/data_model", component: DataModel },
     { path: "/templates", component: Template },
     { path: "/setup", component: () => import("./views/Setup.vue") },
   ],

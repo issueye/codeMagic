@@ -20,6 +20,7 @@ func InitData() {
 	err := commonService.DB.AutoMigrate(
 		&model.UserInfo{},      // 用户
 		&model.UserGroupInfo{}, // 用户组
+		&model.DataModel{},     // 数据模型
 	)
 
 	if err != nil {
