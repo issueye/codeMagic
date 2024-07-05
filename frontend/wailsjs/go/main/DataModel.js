@@ -10,10 +10,18 @@ export function DeleteDataModel(arg1) {
   return window['go']['main']['DataModel']['DeleteDataModel'](arg1);
 }
 
+export function GetDataModelInfo(arg1) {
+  return window['go']['main']['DataModel']['GetDataModelInfo'](arg1);
+}
+
 export function GetDataModelList(arg1, arg2, arg3) {
   return window['go']['main']['DataModel']['GetDataModelList'](arg1, arg2, arg3);
 }
 
 export function ModifyDataModel(arg1) {
   return window['go']['main']['DataModel']['ModifyDataModel'](arg1);
+}
+
+export function SaveModelInfo(arg1, arg2) {
+  return window['go']['main']['DataModel']['SaveModelInfo'](arg1, arg2);
 }

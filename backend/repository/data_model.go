@@ -11,6 +11,11 @@ type RequestModifyDataModel struct {
 }
 
 // 查询请求数据
-type RequestDataModelList struct {
+type RequestDataModelQuery struct {
 	Condition string `json:"condition"` // 条件
+}
+
+// 查询请求数据详情
+type RequestModelInfoSave struct {
+	model.ModelInfo
 }

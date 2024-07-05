@@ -13,7 +13,7 @@ const router = createRouter({
     { path: "/login", name: "login", component: Login },
     { path: "/home", name: "home", component: Home },
     { path: "/datasets", component: Dataset },
-    { path: "/data_model", component: DataModel },
+    { path: "/data_model", component: DataModel, meta: { transition: 'slide-left' }, },
     { path: "/templates", component: Template },
     { path: "/setup", component: () => import("./views/Setup.vue") },
   ],

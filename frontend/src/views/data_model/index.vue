@@ -1,237 +1,170 @@
 <template>
-    <BsHeader title="数据模型信息" description="数据模型信息">
-        <template #actions>
-            <el-button @click="onAddClick">返回</el-button>
-        </template>
-    </BsHeader>
-    <BsMain>
-        <template #body>
-            <el-form inline>
-                <el-form-item label="检索">
-                    <el-input v-model="form.condition" placeholder="请输入检索内容" clearable @change="onChange" />
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="onQryClick">查询</el-button>
-                </el-form-item>
-            </el-form>
+  <BsHeader :title="mdTitle" description="数据模型信息">
+    <template #actions>
+      <el-button @click="onBackClick">返回</el-button>
+    </template>
+  </BsHeader>
+  <BsMain>
+    <template #body>
+      <div class="mb-3">
+        <el-button type="primary" @click="onAddOneCellClick(-1)"
+          >新增一行</el-button
+        >
+        <el-button type="primary" @click="onSaveClick">保存</el-button>
+      </div>
 
-            <div class="h-[calc(100% - 60px)]">
-                <el-table border :data="tableData" size="small" highlight-current-row stripe>
-                    <el-table-column prop="id" label="编码" width="150" show-overflow />
-                    <el-table-column prop="title" label="标题" width="150" show-overflow />
-                    <el-table-column prop="makeType" label="生成类型" width="90" show-overflow>
-                        <template v-slot="{ row }">
-                            <el-tag effect="plain" :type="row.makeType === 1 ? 'success' : 'danger'">
-                                {{ row.makeType === 1 ? "数据源" : "手动生成" }}
-                            </el-tag>
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="mark" label="备注" show-overflow />
-                    <el-table-column label="操作" width="190" align="center" fixed="right">
-                        <template v-slot="{ row }">
-                            <el-button type="primary" link size="small" @click="onEditClick(row)">编辑模型</el-button>
-                            <el-button type="primary" link size="small" @click="onEditClick(row)">编辑</el-button>
-                            <el-button type="danger" link size="small" @click="onDeleteClick(row)">删除</el-button>
-                        </template>
-                    </el-table-column>
-                </el-table>
-            </div>
-            <div style="margin-top: 10px">
-                <el-pagination small background :current-page="pageNum" :page-size="pageSize" :page-sizes="[5, 10, 20]"
-                    :total="total" layout="total, sizes, prev, pager, next" @size-change="onSizeChange"
-                    @current-change="onCurrentChange" />
-            </div>
-        </template>
-    </BsMain>
-
-    <BsDialog :title="title" :width="500" :visible="visible" @close="onClose" @save="onSave" @open="onOpen">
-        <template #body>
-            <el-form label-width="auto" :model="dataForm" :rules="rules" ref="dataFormRef">
-                <el-form-item label="标题" prop="title">
-                    <el-input v-model="dataForm.title" placeholder="请输入数据模型标题" clearable />
-                </el-form-item>
-                <el-form-item label="生成类型" prop="makeType">
-                    <el-select v-model="dataForm.makeType" placeholder="请选择生成类型">
-                        <el-option :value="0" label="手动生成" />
-                        <el-option :value="1" label="数据源" />
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="备注">
-                    <el-input v-model="dataForm.mark" placeholder="请输入备注" type="textarea" :row="2" clearable />
-                </el-form-item>
-            </el-form>
-        </template>
-    </BsDialog>
+      <div class="h-[calc(100% - 60px)]">
+        <vxe-table
+          border
+          show-overflow
+          keep-source
+          size="mini"
+          ref="tableRef"
+          :data="tableData"
+          :menu-config="menuConfig"
+          :edit-rules="validRules"
+          max-height="550"
+          :edit-config="{ trigger: 'click', mode: 'cell', showStatus: true }"
+          @menu-click="onCtxMenuClickEvent"
+        >
+          <vxe-column type="seq" title="序号" width="70"></vxe-column>
+          <vxe-column field="title" title="标题" :edit-render="{}">
+            <template #edit="{ row }">
+              <el-input v-model="row.title" placeholder="请输入名称" />
+            </template>
+          </vxe-column>
+          <vxe-column field="name" title="名称" :edit-render="{}">
+            <template #edit="{ row }">
+              <el-input v-model="row.name" placeholder="请输入名称" />
+            </template>
+          </vxe-column>
+          <vxe-column
+            field="columnType"
+            title="数据类型"
+            :edit-render="{}"
+            width="180"
+          >
+            <template #edit="{ row }">
+              <el-select v-model="row.columnType" placeholder="请选择数据类型">
+                <el-option value="int" label="int" />
+                <el-option value="nvarchar" label="nvarchar" />
+                <el-option value="bool" label="bool" />
+                <el-option value="text" label="text" />
+                <el-option value="datetime" label="datetime" />
+                <el-option value="decimal" label="decimal" />
+              </el-select>
+            </template>
+          </vxe-column>
+          <vxe-column field="size" title="长度" :edit-render="{}" width="180">
+            <template #edit="{ row }">
+              <el-input-number v-model="row.size" controls-position="right" />
+            </template>
+          </vxe-column>
+        </vxe-table>
+      </div>
+    </template>
+  </BsMain>
 </template>
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from "vue";
-import { ElMessage, ElMessageBox } from "element-plus";
-import { GetDataModelList, CreateDataModel, DeleteDataModel, ModifyDataModel } from '../../../wailsjs/go/main/DataModel';
-import { model, repository } from "../../../wailsjs/go/models";
+import { useRouter, useRoute } from "vue-router";
+import {
+  GetDataModelInfo,
+  SaveModelInfo,
+} from "../../../wailsjs/go/main/DataModel";
+import { model } from "../../../wailsjs/go/models";
 import { Ref } from "vue";
 
-const nameTitle = "数据模型";
-// 标题
-const title = ref("数据模型");
-// 显示弹窗
-const visible = ref(false);
-// 操作类型
-const operationType = ref(0);
 // 数据
-const dataFormRef = ref();
+const tableRef = ref();
 
-const rules = reactive({
-    name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
-    account: [{ required: true, message: "请输入账户", trigger: "blur" }],
-    groupId: [{ required: true, message: "请选择用户组", trigger: "blur" }],
+const router = useRouter();
+const route = useRoute();
+
+const menuConfig = reactive({
+  body: {
+    options: [
+      [
+        { code: "insertAt", name: "插入", disabled: false },
+        { code: "remove", name: "删除", disabled: false },
+      ],
+    ],
+  },
 });
 
-// 分页
-const pageNum = ref(1);
-const pageSize = ref(10);
-const total = ref(0);
+const id = ref(route.query["id"]);
+const mdTitle = ref(route.query["title"]);
 
-// 查询表单
-const form = reactive({
-    condition: "",
+const validRules = ref({
+  title: [{ required: true, message: "标题不能为空" }],
+  name: [{ required: true, message: "名称不能为空" }],
+  columnType: [{ required: true, message: "数据类型不能为空" }],
 });
 
-// 弹窗表单
-const dataForm = reactive({
-    id: "",
-    title: "",
-    makeType: 0,
-    mark: "",
-});
+onMounted(() => {});
 
-onMounted(() => { });
-
-const tableData: Ref<model.DataModel[]> = ref([]);
+const tableData: Ref<model.ModelInfo[]> = ref([]);
 
 const getData = async () => {
-    const data = await GetDataModelList(form.condition, pageNum.value, pageSize.value);
-    tableData.value = data;
-};
+  const data = await GetDataModelInfo(id.value as string);
+  console.log("data", data);
 
-// 重置表单数据
-const resetForm = () => {
-    dataForm.id = "";
-    dataForm.title = "";
-    dataForm.makeType = 0;
-    dataForm.mark = "";
-};
-
-// 赋值表单数据
-const setForm = (value: any) => {
-    dataForm.id = value.id;
-    dataForm.title = value.title;
-    dataForm.makeType = value.makeType;
-    dataForm.mark = value.mark;
+  tableData.value = data;
 };
 
 onMounted(() => {
-    getData();
+  getData();
 });
 
-// 事件
-
-/**
- * 添加事件
- */
-const onAddClick = () => {
-    operationType.value = 0;
-    title.value = `[添加]${nameTitle}`;
-    resetForm();
-    visible.value = true;
+const onBackClick = () => {
+  router.push("/");
 };
 
-const onChange = () => {
-    getData();
+const onSaveClick = () => {
+  validEvent();
 };
 
-const onQryClick = () => {
-    getData();
+const validEvent = async () => {
+  const $table = tableRef.value;
+  if ($table) {
+    const errMap = await $table.validate();
+    if (!errMap) {
+      console.log("tableData", tableData.value);
+
+      await SaveModelInfo(id.value as string, tableData.value);
+      getData();
+    }
+  }
 };
 
-const onEditClick = (value: any) => {
-    operationType.value = 1;
-    title.value = `[编辑]${nameTitle}`;
-    setForm(value);
-    visible.value = true;
+const onAddOneCellClick = async (row: number) => {
+  const $table = tableRef.value;
+  if ($table) {
+    const record = {
+      title: "",
+      name: "",
+      columnType: "varchar",
+    };
+    const { row: newRow } = await $table.insertAt(record, row);
+    await $table.setEditCell(newRow, "name");
+  }
 };
 
-const onDeleteClick = (value: any) => {
-    console.log("value", value.value);
-
-    ElMessageBox.confirm("请确认是否要删除数据？", "警告", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-    })
-        .then(async () => {
-            await DeleteDataModel(value.id);
-            getData();
-        })
-        .catch(() => {
-            ElMessage.info("取消删除");
+const onCtxMenuClickEvent = ({ menu, row, column }) => {
+  const $table = tableRef.value;
+  if ($table) {
+    switch (menu.code) {
+      case "insertAt": {
+        $table.insertAt({}, row || -1).then(({ row }) => {
+          $table.setEditCell(row, column || "name");
         });
-};
-
-const onSave = () => {
-    if (!dataFormRef.value) return;
-    dataFormRef.value.validate(async (valid: boolean) => {
-        if (valid) {
-            switch (operationType.value) {
-                case 0: {
-                    let data = repository.RequestCreateDataModel.createFrom({
-                        title: dataForm.title,
-                        makeType: dataForm.makeType,
-                        mark: dataForm.mark,
-                    })
-
-                    await CreateDataModel(data);
-                    visible.value = false;
-                    getData();
-                    break;
-                }
-
-                case 1: {
-                    let data = repository.RequestModifyDataModel.createFrom(dataForm)
-                    await ModifyDataModel(data);
-                    // ElMessage.success(res.message);
-                    visible.value = false;
-                    getData();
-                    break;
-                }
-            }
-        } else {
-            console.log("表单验证失败");
-        }
-    });
-};
-
-// 弹窗打开时
-const onOpen = async () => {
-    // const res = await apiUserGroupList();
-    // if (res.code === 200) {
-    //   groupTableData.value = res.data;
-    // }
-};
-
-const onSizeChange = (value: number) => {
-    pageSize.value = value;
-    getData();
-};
-
-const onCurrentChange = () => {
-    getData();
-};
-
-const onClose = () => {
-    visible.value = false;
-
-    if (!dataFormRef.value) return;
-    dataFormRef.value.resetFields();
+        break;
+      }
+      case "remove":
+        $table.remove(row);
+        break;
+    }
+  }
 };
 </script>

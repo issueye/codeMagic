@@ -28,7 +28,55 @@ export namespace model {
 		    if (!a) {
 		        return a;
 		    }
-		    if (a.slice) {
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class ModelInfo {
+	    id: string;
+	    // Go type: time
+	    createdAt: any;
+	    // Go type: time
+	    updatedAt: any;
+	    dataModelId: string;
+	    title: string;
+	    name: string;
+	    columnType: number;
+	    length: number;
+	    mark: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new ModelInfo(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.id = source["id"];
+	        this.createdAt = this.convertValues(source["createdAt"], null);
+	        this.updatedAt = this.convertValues(source["updatedAt"], null);
+	        this.dataModelId = source["dataModelId"];
+	        this.title = source["title"];
+	        this.name = source["name"];
+	        this.columnType = source["columnType"];
+	        this.length = source["length"];
+	        this.mark = source["mark"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
 		        return (a as any[]).map(elem => this.convertValues(elem, classs));
 		    } else if ("object" === typeof a) {
 		        if (asMap) {
@@ -63,6 +111,54 @@ export namespace repository {
 	        this.mark = source["mark"];
 	    }
 	}
+	export class RequestModelInfoSave {
+	    id: string;
+	    // Go type: time
+	    createdAt: any;
+	    // Go type: time
+	    updatedAt: any;
+	    dataModelId: string;
+	    title: string;
+	    name: string;
+	    columnType: number;
+	    length: number;
+	    mark: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new RequestModelInfoSave(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.id = source["id"];
+	        this.createdAt = this.convertValues(source["createdAt"], null);
+	        this.updatedAt = this.convertValues(source["updatedAt"], null);
+	        this.dataModelId = source["dataModelId"];
+	        this.title = source["title"];
+	        this.name = source["name"];
+	        this.columnType = source["columnType"];
+	        this.length = source["length"];
+	        this.mark = source["mark"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
 	export class RequestModifyDataModel {
 	    id: string;
 	    // Go type: time
@@ -91,7 +187,7 @@ export namespace repository {
 		    if (!a) {
 		        return a;
 		    }
-		    if (a.slice) {
+		    if (a.slice && a.map) {
 		        return (a as any[]).map(elem => this.convertValues(elem, classs));
 		    } else if ("object" === typeof a) {
 		        if (asMap) {

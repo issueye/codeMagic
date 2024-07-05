@@ -41,7 +41,7 @@ func (owner *DataModel) Delete(id string) error {
 }
 
 // 获取数据列表
-func (owner *DataModel) List(data *model.Page[repository.RequestDataModelList]) ([]*model.DataModel, error) {
+func (owner *DataModel) List(data *model.Page[repository.RequestDataModelQuery]) ([]*model.DataModel, error) {
 	list := make([]*model.DataModel, 0)
 	err := service.Filter(owner, model.DataModel{}.TableName(), data, &list, func(db *gorm.DB) (*gorm.DB, error) {
 
@@ -53,4 +53,36 @@ func (owner *DataModel) List(data *model.Page[repository.RequestDataModelList]) 
 	})
 
 	return list, err
+}
+
+// SaveModelInfo
+// 保存数据模型明细信息
+func (owner *DataModel) SaveModelInfo(modelId string, data []*repository.RequestModelInfoSave) error {
+	// 先删除模型明细信息
+	err := owner.GetDB().Delete(&model.ModelInfo{}, "data_model_id = ?", modelId).Error
+	if err != nil {
+		return err
+	}
+
+	saveData := make([]*model.ModelInfo, len(data))
+	// 保存模型明细信息
+	for index, item := range data {
+		saveData[index] = model.NewModelInfo(&model.ModelInfoBase{
+			DataModelId: item.DataModelId,
+			Title:       item.Title,
+			Name:        item.Name,
+			ColumnType:  item.ColumnType,
+			Length:      item.Length,
+			Mark:        item.Mark,
+		})
+	}
+
+	return owner.GetDB().Model(&model.ModelInfo{}).Create(saveData).Error
+}
+
+// GetModelInfo
+// 获取数据模型明细信息
+func (owner *DataModel) GetModelInfo(modelId string) ([]*model.ModelInfo, error) {
+	list := make([]*model.ModelInfo, 0)
+	return list, owner.GetDB().Model(&model.ModelInfo{}).Where("data_model_id = ?", modelId).Find(&list).Error
 }

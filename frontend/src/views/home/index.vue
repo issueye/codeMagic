@@ -29,10 +29,23 @@
           stripe
         >
           <el-table-column prop="id" label="编码" width="150" show-overflow />
-          <el-table-column prop="title" label="标题" width="150" show-overflow />
-          <el-table-column prop="makeType" label="生成类型" width="90" show-overflow>
+          <el-table-column
+            prop="title"
+            label="标题"
+            width="150"
+            show-overflow
+          />
+          <el-table-column
+            prop="makeType"
+            label="生成类型"
+            width="90"
+            show-overflow
+          >
             <template v-slot="{ row }">
-              <el-tag effect="plain" :type="row.makeType === 1 ? 'success' : 'danger'">
+              <el-tag
+                effect="plain"
+                :type="row.makeType === 1 ? 'success' : 'danger'"
+              >
                 {{ row.makeType === 1 ? "数据源" : "手动生成" }}
               </el-tag>
             </template>
@@ -49,7 +62,7 @@
                 type="primary"
                 link
                 size="small"
-                @click="onEditClick(row)"
+                @click="onEditDataModelClick(row)"
                 >编辑模型</el-button
               >
               <el-button
@@ -131,9 +144,15 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { GetDataModelList, CreateDataModel, DeleteDataModel, ModifyDataModel } from '../../../wailsjs/go/main/DataModel';
+import {
+  GetDataModelList,
+  CreateDataModel,
+  DeleteDataModel,
+  ModifyDataModel,
+} from "../../../wailsjs/go/main/DataModel";
 import { model, repository } from "../../../wailsjs/go/models";
 import { Ref } from "vue";
+import { useRouter } from "vue-router";
 
 const nameTitle = "数据模型";
 // 标题
@@ -144,6 +163,8 @@ const visible = ref(false);
 const operationType = ref(0);
 // 数据
 const dataFormRef = ref();
+// 路由
+const router = useRouter();
 
 const rules = reactive({
   name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
@@ -171,10 +192,14 @@ const dataForm = reactive({
 
 onMounted(() => {});
 
-const tableData:Ref<model.DataModel[]> = ref([]);
+const tableData: Ref<model.DataModel[]> = ref([]);
 
 const getData = async () => {
-  const data = await GetDataModelList(form.condition, pageNum.value, pageSize.value);
+  const data = await GetDataModelList(
+    form.condition,
+    pageNum.value,
+    pageSize.value
+  );
   tableData.value = data;
 };
 
@@ -225,6 +250,14 @@ const onEditClick = (value: any) => {
   visible.value = true;
 };
 
+const onEditDataModelClick = (value: any) => {
+  console.log("value", value);
+  router.push({
+    path: "/data_model",
+    query: { id: value.id, title: value.title },
+  });
+};
+
 const onDeleteClick = (value: any) => {
   console.log("value", value.value);
 
@@ -252,7 +285,7 @@ const onSave = () => {
             title: dataForm.title,
             makeType: dataForm.makeType,
             mark: dataForm.mark,
-          })
+          });
 
           await CreateDataModel(data);
           visible.value = false;
@@ -261,7 +294,7 @@ const onSave = () => {
         }
 
         case 1: {
-          let data = repository.RequestModifyDataModel.createFrom(dataForm)
+          let data = repository.RequestModifyDataModel.createFrom(dataForm);
           await ModifyDataModel(data);
           // ElMessage.success(res.message);
           visible.value = false;

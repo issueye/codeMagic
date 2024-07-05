@@ -1,41 +1,32 @@
 <template>
-<div class="bs-header-box">
+  <div
+    class="w-full h-[55px] flex justify-between items-center bg-white border border-b-1 border-solid border-[#d9d9d9]"
+  >
     <div>
-        <span class="ml-5 text-[#262626] leading-8 text-base font-bold" style="vertical-align: middle">{{ title }}</span>
-        <el-divider direction="vertical" />
-        <span class="text-[#BFBFBF] text-xs">{{ description }}</span>
+      <span
+        class="ml-5 text-[#262626] leading-8 text-base font-bold"
+        style="vertical-align: middle"
+        >{{ title }}</span
+      >
+      <el-divider direction="vertical" />
+      <span class="text-[#BFBFBF] text-xs">{{ description }}</span>
     </div>
     <div class="mr-2.5">
-        <slot name="actions"></slot>
+      <slot name="actions"></slot>
     </div>
-</div>
+  </div>
 </template>
 
-<script setup>
-import { toRefs } from 'vue';
-
+<script setup lang="ts">
 const props = defineProps({
-    title: {
-        type: String,
-        default: '',
-    },
-    description: {
-        type: String,
-        default: '',
-    },
-})
-
+  title: {
+    type: String,
+    default: "",
+  },
+  description: {
+    type: String,
+    default: "",
+  },
+});
 </script>
 
-<style lang="scss" scoped>
-.bs-header-box {
-    border-radius: 2px 2px 0 0;
-    width: 100%;
-    height: 45px;
-    display: inline-flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #fff;
-    border-bottom: 1px solid #D9D9D9;
-}
-</style>

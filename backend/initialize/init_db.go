@@ -21,6 +21,7 @@ func InitData() {
 		&model.UserInfo{},      // 用户
 		&model.UserGroupInfo{}, // 用户组
 		&model.DataModel{},     // 数据模型
+		&model.ModelInfo{},     // 模型信息
 	)
 
 	if err != nil {
