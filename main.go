@@ -11,7 +11,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 	"github.com/wailsapp/wails/v2/pkg/options/mac"
-	"github.com/wailsapp/wails/v2/pkg/options/windows" 
+	"github.com/wailsapp/wails/v2/pkg/options/windows"
 )
 
 //go:embed frontend/dist
@@ -58,6 +58,7 @@ func main() {
 		Bind: []interface{}{
 			app,
 			NewDataModel(),
+			NewTemplate(),
 		},
 		// Windows platform specific options
 		Windows: &windows.Options{

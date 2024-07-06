@@ -3,14 +3,14 @@
 import {repository} from '../models';
 import {model} from '../models';
 
-export function CreateDataModel(arg1:repository.RequestCreateDataModel):Promise<void>;
+export function Create(arg1:repository.RequestCreateDataModel):Promise<void>;
 
-export function DeleteDataModel(arg1:string):Promise<void>;
+export function Delete(arg1:string):Promise<void>;
 
-export function GetDataModelInfo(arg1:string):Promise<Array<model.ModelInfo>>;
+export function GetModelInfo(arg1:string):Promise<Array<model.ModelInfo>>;
 
-export function GetDataModelList(arg1:string,arg2:number,arg3:number):Promise<Array<model.DataModel>>;
+export function List(arg1:string,arg2:number,arg3:number):Promise<Array<model.DataModel>>;
 
-export function ModifyDataModel(arg1:repository.RequestModifyDataModel):Promise<void>;
+export function Modify(arg1:repository.RequestModifyDataModel):Promise<void>;
 
 export function SaveModelInfo(arg1:string,arg2:Array<repository.RequestModelInfoSave>):Promise<void>;

@@ -145,12 +145,12 @@
 import { onMounted, reactive, ref } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import {
-  GetDataModelList,
-  CreateDataModel,
-  DeleteDataModel,
-  ModifyDataModel,
+  List,
+  Create,
+  Delete,
+  Modify,
 } from "../../../wailsjs/go/main/DataModel";
-import { model, repository } from "../../../wailsjs/go/models";
+import { model } from "../../../wailsjs/go/models";
 import { Ref } from "vue";
 import { useRouter } from "vue-router";
 
@@ -183,19 +183,19 @@ const form = reactive({
 });
 
 // 弹窗表单
-const dataForm = reactive({
-  id: "",
+const dataForm = reactive<model.DataModel>(model.DataModel.createFrom({
+  name: "",
   title: "",
   makeType: 0,
   mark: "",
-});
+}));
 
 onMounted(() => {});
 
 const tableData: Ref<model.DataModel[]> = ref([]);
 
 const getData = async () => {
-  const data = await GetDataModelList(
+  const data = await List(
     form.condition,
     pageNum.value,
     pageSize.value
@@ -267,7 +267,7 @@ const onDeleteClick = (value: any) => {
     type: "warning",
   })
     .then(async () => {
-      await DeleteDataModel(value.id);
+      await Delete(value.id);
       getData();
     })
     .catch(() => {
@@ -281,22 +281,16 @@ const onSave = () => {
     if (valid) {
       switch (operationType.value) {
         case 0: {
-          let data = repository.RequestCreateDataModel.createFrom({
-            title: dataForm.title,
-            makeType: dataForm.makeType,
-            mark: dataForm.mark,
-          });
-
-          await CreateDataModel(data);
+          await Create(dataForm);
+          ElMessage.success("创建成功");
           visible.value = false;
           getData();
           break;
         }
 
         case 1: {
-          let data = repository.RequestModifyDataModel.createFrom(dataForm);
-          await ModifyDataModel(data);
-          // ElMessage.success(res.message);
+          await Modify(dataForm);
+          ElMessage.success("修改成功");
           visible.value = false;
           getData();
           break;

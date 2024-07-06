@@ -30,12 +30,13 @@
 import { onMounted, reactive, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import {
-  GetDataModelInfo,
+  GetModelInfo,
   SaveModelInfo,
 } from "../../../wailsjs/go/main/DataModel";
 import { model } from "../../../wailsjs/go/models";
 import { Ref } from "vue";
 import { ElMessage } from "element-plus";
+import { VxeTableEvents } from "vxe-table/types/all";
 // import { VxeColumnPropTypes, VxeTableEvents } from "vxe-table";
 
 // 数据
@@ -81,7 +82,7 @@ onMounted(() => { });
 const tableData: Ref<model.ModelInfo[]> = ref([]);
 
 const getData = async () => {
-  const data = await GetDataModelInfo(id.value as string);
+  const data = await GetModelInfo(id.value as string);
   console.log("data", data);
 
   tableData.value = data;

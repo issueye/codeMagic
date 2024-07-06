@@ -69,12 +69,12 @@
 import { onMounted, reactive, ref } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import {
-    GetDataModelList,
-    CreateDataModel,
-    DeleteDataModel,
-    ModifyDataModel,
-} from "../../../wailsjs/go/main/DataModel";
-import { model, repository } from "../../../wailsjs/go/models";
+    List,
+    Create,
+    Delete,
+    Modify,
+} from "../../../wailsjs/go/main/Template";
+import { model } from "../../../wailsjs/go/models";
 import { Ref } from "vue";
 import { useRouter } from "vue-router";
 
@@ -107,19 +107,20 @@ const form = reactive({
 });
 
 // 弹窗表单
-const dataForm = reactive({
+const dataForm = reactive<model.CodeTemplate>(model.CodeTemplate.createFrom({
     id: "",
     title: "",
-    makeType: 0,
+    fileName: "",
+    fileType: "",
     mark: "",
-});
+}));
 
 onMounted(() => { });
 
-const tableData: Ref<model.DataModel[]> = ref([]);
+const tableData: Ref<model.CodeTemplate[]> = ref([]);
 
 const getData = async () => {
-    const data = await GetDataModelList(
+    const data = await List(
         form.condition,
         pageNum.value,
         pageSize.value
@@ -132,7 +133,7 @@ const resetForm = () => {
     dataForm.id = "";
     dataForm.title = "";
     dataForm.fileName = "";
-    dataForm.fileType = "";
+    dataForm.fileType = 0;
     dataForm.mark = "";
 };
 
@@ -193,7 +194,7 @@ const onDeleteClick = (value: any) => {
         type: "warning",
     })
         .then(async () => {
-            await DeleteDataModel(value.id);
+            await Delete(value.id);
             getData();
         })
         .catch(() => {
@@ -207,21 +208,14 @@ const onSave = () => {
         if (valid) {
             switch (operationType.value) {
                 case 0: {
-                    let data = repository.RequestCreateDataModel.createFrom({
-                        title: dataForm.title,
-                        makeType: dataForm.makeType,
-                        mark: dataForm.mark,
-                    });
-
-                    await CreateDataModel(data);
+                    await Create(dataForm);
                     visible.value = false;
                     getData();
                     break;
                 }
 
                 case 1: {
-                    let data = repository.RequestModifyDataModel.createFrom(dataForm);
-                    await ModifyDataModel(data);
+                    await Modify(dataForm);
                     // ElMessage.success(res.message);
                     visible.value = false;
                     getData();

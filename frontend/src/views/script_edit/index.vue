@@ -15,12 +15,24 @@
 import { ref, onMounted, toRaw } from 'vue'
 import * as monaco from 'monaco-editor'
 import { useRouter, useRoute } from 'vue-router';
+import { GetCode, SaveCode } from '../../../wailsjs/go/main/Template';
+import { ElMessage } from 'element-plus';
+
+
+const router = useRouter();
+const route = useRoute();
+
+const id = ref(route.query["id"]);
+const mdTitle = ref(route.query["title"]);
 
 const editorContainer = ref<any>(null)
 const editor = ref<any>(null)
-onMounted(() => {
+onMounted(async () => {
+    const code = await GetCode(id.value as string);
+    console.log('code', code);
+
     editor.value = monaco.editor.create(editorContainer.value, {
-        value: "",
+        value: code || "",
         language: "javascript",
         folding: true, // 是否折叠
         foldingHighlight: true, // 折叠等高线
@@ -43,7 +55,7 @@ onMounted(() => {
         }
     })
 
-    console.log('editor', editor.value);
+    // console.log('editor', editor.value);
 
     // 设置快捷键 ctrl + s
     editor.value.addAction({
@@ -52,7 +64,10 @@ onMounted(() => {
         keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
         run: () => {
             let code = toRaw(editor.value).getValue()
-            console.log('code', code)
+            // console.log('code', code)
+            SaveCode(id.value as string, code).then(() => {
+                ElMessage.success('保存成功');
+            })
         }
     })
 })
@@ -62,11 +77,6 @@ onMounted(() => {
 //    editor.value.dispose()
 // })
 
-const router = useRouter();
-const route = useRoute();
-
-// const id = ref(route.query["id"]);
-const mdTitle = ref(route.query["title"]);
 
 const onBackClick = () => {
     router.push("/templates");
