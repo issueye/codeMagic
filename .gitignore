@@ -2,6 +2,7 @@
 node_modules
 build
 dist
+runtime
 
 # env
 .env
@@ -18,3 +19,4 @@ dist
 .DS_Store?
 
 *.log
+*.db

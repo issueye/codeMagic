@@ -6,60 +6,20 @@
   </BsHeader>
   <BsMain>
     <template #body>
-      <div class="mb-3">
-        <el-button type="primary" @click="onAddOneCellClick(-1)"
-          >新增一行</el-button
-        >
+      <div class="flex justify-end mb-3">
+        <el-button type="primary" @click="onAddOneCellClick">新增一行</el-button>
         <el-button type="primary" @click="onSaveClick">保存</el-button>
       </div>
 
       <div class="h-[calc(100% - 60px)]">
-        <vxe-table
-          border
-          show-overflow
-          keep-source
-          size="mini"
-          ref="tableRef"
-          :data="tableData"
-          :menu-config="menuConfig"
-          :edit-rules="validRules"
-          max-height="550"
-          :edit-config="{ trigger: 'click', mode: 'cell', showStatus: true }"
-          @menu-click="onCtxMenuClickEvent"
-        >
-          <vxe-column type="seq" title="序号" width="70"></vxe-column>
-          <vxe-column field="title" title="标题" :edit-render="{}">
-            <template #edit="{ row }">
-              <el-input v-model="row.title" placeholder="请输入名称" />
-            </template>
-          </vxe-column>
-          <vxe-column field="name" title="名称" :edit-render="{}">
-            <template #edit="{ row }">
-              <el-input v-model="row.name" placeholder="请输入名称" />
-            </template>
-          </vxe-column>
-          <vxe-column
-            field="columnType"
-            title="数据类型"
-            :edit-render="{}"
-            width="180"
-          >
-            <template #edit="{ row }">
-              <el-select v-model="row.columnType" placeholder="请选择数据类型">
-                <el-option value="int" label="int" />
-                <el-option value="nvarchar" label="nvarchar" />
-                <el-option value="bool" label="bool" />
-                <el-option value="text" label="text" />
-                <el-option value="datetime" label="datetime" />
-                <el-option value="decimal" label="decimal" />
-              </el-select>
-            </template>
-          </vxe-column>
-          <vxe-column field="size" title="长度" :edit-render="{}" width="180">
-            <template #edit="{ row }">
-              <el-input-number v-model="row.size" controls-position="right" />
-            </template>
-          </vxe-column>
+        <vxe-table border show-overflow keep-source size="mini" ref="tableRef" :data="tableData"
+          :menu-config="menuConfig" :edit-rules="validRules" max-height="550" empty-text="没有数据"
+          :edit-config="{ trigger: 'click', mode: 'row', showStatus: true }" @menu-click="onCtxMenuClickEvent">
+          <vxe-column type="seq" title="序号" width="70" />
+          <vxe-column field="title" title="标题" :edit-render="{ name: 'ElInput' }" />
+          <vxe-column field="name" title="名称" :edit-render="{ name: 'ElInput' }" />
+          <vxe-column field="columnType" title="数据类型" :edit-render="columnTypeRender" width="180" />
+          <vxe-column field="size" title="长度" width="180" :edit-render="{ name: 'ElInputNumber' }" />
         </vxe-table>
       </div>
     </template>
@@ -75,6 +35,8 @@ import {
 } from "../../../wailsjs/go/main/DataModel";
 import { model } from "../../../wailsjs/go/models";
 import { Ref } from "vue";
+import { ElMessage } from "element-plus";
+// import { VxeColumnPropTypes, VxeTableEvents } from "vxe-table";
 
 // 数据
 const tableRef = ref();
@@ -93,6 +55,18 @@ const menuConfig = reactive({
   },
 });
 
+const columnTypeRender = reactive({
+  name: 'ElSelect',
+  options: [
+    { value: 'int', label: 'int' },
+    { value: 'nvarchar', label: 'nvarchar' },
+    { value: 'bool', label: 'bool' },
+    { value: 'text', label: 'text' },
+    { value: 'datetime', label: 'datetime' },
+    { value: 'decimal', label: 'decimal' },
+  ]
+})
+
 const id = ref(route.query["id"]);
 const mdTitle = ref(route.query["title"]);
 
@@ -102,7 +76,7 @@ const validRules = ref({
   columnType: [{ required: true, message: "数据类型不能为空" }],
 });
 
-onMounted(() => {});
+onMounted(() => { });
 
 const tableData: Ref<model.ModelInfo[]> = ref([]);
 
@@ -121,8 +95,8 @@ const onBackClick = () => {
   router.push("/");
 };
 
-const onSaveClick = () => {
-  validEvent();
+const onSaveClick = async () => {
+  await validEvent();
 };
 
 const validEvent = async () => {
@@ -130,28 +104,34 @@ const validEvent = async () => {
   if ($table) {
     const errMap = await $table.validate();
     if (!errMap) {
-      console.log("tableData", tableData.value);
-
+      // const data = $table.tableData;
+      const tbdata = $table.getTableData();
+      console.log("$table", tbdata.tableData);
+      tableData.value = tbdata.tableData;
       await SaveModelInfo(id.value as string, tableData.value);
       getData();
+      ElMessage.success('保存成功');
     }
   }
 };
 
-const onAddOneCellClick = async (row: number) => {
+const onAddOneCellClick = async () => {
   const $table = tableRef.value;
   if ($table) {
-    const record = {
-      title: "",
-      name: "",
-      columnType: "varchar",
-    };
-    const { row: newRow } = await $table.insertAt(record, row);
-    await $table.setEditCell(newRow, "name");
+    const record = model.ModelInfo.createFrom(
+      {
+        title: "",
+        name: "",
+        columnType: '',
+        length: 0,
+      }
+    );
+    const { row: newRow } = await $table.insertAt(record, -1);
+    await $table.setEditRow(newRow, "name");
   }
 };
 
-const onCtxMenuClickEvent = ({ menu, row, column }) => {
+const onCtxMenuClickEvent: VxeTableEvents.MenuClick<model.ModelInfo> = ({ menu, row, column }) => {
   const $table = tableRef.value;
   if ($table) {
     switch (menu.code) {

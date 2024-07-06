@@ -18,6 +18,8 @@
 </template>
 
 <script setup lang="ts">
+import { toRefs } from 'vue';
+
 const props = defineProps({
   title: {
     type: String,
@@ -28,5 +30,8 @@ const props = defineProps({
     default: "",
   },
 });
+
+const { title, description } = toRefs(props);
+
 </script>
 

@@ -68,11 +68,11 @@ func (owner *DataModel) SaveModelInfo(modelId string, data []*repository.Request
 	// 保存模型明细信息
 	for index, item := range data {
 		saveData[index] = model.NewModelInfo(&model.ModelInfoBase{
-			DataModelId: item.DataModelId,
+			DataModelId: modelId,
 			Title:       item.Title,
 			Name:        item.Name,
 			ColumnType:  item.ColumnType,
-			Length:      item.Length,
+			Size:        item.Size,
 			Mark:        item.Mark,
 		})
 	}

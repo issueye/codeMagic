@@ -1,10 +1,8 @@
 <template>
-    <div class="bs-main-body">
-        <div class="body-box">
+    <div class="h-[calc(100% - 46px)] bg-white bs-main-body">
+        <div class="p-3" style="height: calc(100% - 65px);">
             <slot name="body"></slot>
         </div>
-        <slot name="footer">
-        </slot>
     </div>
 </template>
 

@@ -51,8 +51,8 @@ export namespace model {
 	    dataModelId: string;
 	    title: string;
 	    name: string;
-	    columnType: number;
-	    length: number;
+	    columnType: string;
+	    size: number;
 	    mark: string;
 	
 	    static createFrom(source: any = {}) {
@@ -68,7 +68,7 @@ export namespace model {
 	        this.title = source["title"];
 	        this.name = source["name"];
 	        this.columnType = source["columnType"];
-	        this.length = source["length"];
+	        this.size = source["size"];
 	        this.mark = source["mark"];
 	    }
 	
@@ -120,8 +120,8 @@ export namespace repository {
 	    dataModelId: string;
 	    title: string;
 	    name: string;
-	    columnType: number;
-	    length: number;
+	    columnType: string;
+	    size: number;
 	    mark: string;
 	
 	    static createFrom(source: any = {}) {
@@ -137,7 +137,7 @@ export namespace repository {
 	        this.title = source["title"];
 	        this.name = source["name"];
 	        this.columnType = source["columnType"];
-	        this.length = source["length"];
+	        this.size = source["size"];
 	        this.mark = source["mark"];
 	    }
 	
