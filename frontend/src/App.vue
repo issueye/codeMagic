@@ -37,7 +37,7 @@ const isMaximised = ref(false);
     <!-- 侧边栏导航，未登录时不显示 -->
     <nav
       v-show="Auth.logged"
-      class="flex-none flex flex-col justify-between w-[70px] items-center text-center select-none z-20 bg-gray-50/10 dark:bg-slate-900/80"
+      class="flex-none flex flex-col justify-between w-[48px] items-center text-center select-none z-20 bg-gray-50/10 dark:bg-slate-900/80"
       style="--wails-draggable: drag"
     >
       <div
@@ -64,7 +64,7 @@ const isMaximised = ref(false);
       </div>
     </nav>
     <!-- 内容面板 -->
-    <div class="w-[calc(100%-70px)] bg-white dark:bg-gray-900/90">
+    <div class="w-[calc(100%-48px)] bg-white dark:bg-gray-900/90">
       <!-- windows 定制化窗口按钮 -->
       <div
         v-if="isNotMac"

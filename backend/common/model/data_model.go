@@ -24,6 +24,7 @@ func NewDataModel(dmBase *DataModelBase) *DataModel {
 type DataModelBase struct {
 	Title    string `binding:"required" label:"名称" gorm:"column:title;size:300;comment:标题;" json:"title"`        // 标题
 	MakeType int    `binding:"required" label:"类型" gorm:"column:make_type;type:int;comment:类型;" json:"makeType"` // 类型
+	TPIds    Arr    `binding:"required" label:"模板ID" gorm:"column:tp_ids;type:text;comment:模板ID;" json:"tpIds"`  // 模板ID
 	Mark     string `binding:"required" label:"备注" gorm:"column:mark;size:300;comment:备注;" json:"mark"`          // 备注
 }
 

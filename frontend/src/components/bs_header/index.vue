@@ -1,6 +1,7 @@
 <template>
   <div
-    class="w-full h-[55px] flex justify-between items-center bg-white border border-b-1 border-solid border-[#d9d9d9]"
+    class="w-full h-[55px] flex justify-between items-center bg-white"
+    style="border-bottom: 1px solid #e5e5e5"
   >
     <div>
       <span
@@ -18,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs } from 'vue';
+import { toRefs } from "vue";
 
 const props = defineProps({
   title: {
@@ -32,6 +33,5 @@ const props = defineProps({
 });
 
 const { title, description } = toRefs(props);
-
 </script>
 

@@ -28,18 +28,23 @@
           highlight-current-row
           stripe
         >
-          <el-table-column prop="id" label="编码" width="150" show-overflow />
+          <el-table-column
+            prop="id"
+            label="编码"
+            width="150"
+            show-overflow-tooltip
+          />
           <el-table-column
             prop="title"
             label="标题"
             width="150"
-            show-overflow
+            show-overflow-tooltip
           />
           <el-table-column
             prop="makeType"
             label="生成类型"
             width="90"
-            show-overflow
+            show-overflow-tooltip
           >
             <template v-slot="{ row }">
               <el-tag
@@ -50,7 +55,18 @@
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="mark" label="备注" show-overflow />
+          <el-table-column prop="tpIds" label="脚本模板" show-overflow-tooltip>
+            <template v-slot="{ row }">
+              <el-tag
+                class="mr-1"
+                v-for="item in row.tpIds"
+                :key="item"
+                effect="plain"
+                >{{ getTPName(item) }}</el-tag
+              >
+            </template>
+          </el-table-column>
+          <el-table-column prop="mark" label="备注" show-overflow-tooltip />
           <el-table-column
             label="操作"
             width="190"
@@ -105,7 +121,6 @@
     :visible="visible"
     @close="onClose"
     @save="onSave"
-    @open="onOpen"
   >
     <template #body>
       <el-form
@@ -125,6 +140,21 @@
           <el-select v-model="dataForm.makeType" placeholder="请选择生成类型">
             <el-option :value="0" label="手动生成" />
             <el-option :value="1" label="数据源" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="脚本模板" prop="tpIds">
+          <el-select
+            v-model="dataForm.tpIds"
+            placeholder="请选择脚本模板"
+            multiple
+            collapse-tags
+          >
+            <el-option
+              v-for="(item, index) in tpTableData"
+              :key="index"
+              :value="item.id"
+              :label="item.title"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="备注">
@@ -150,6 +180,7 @@ import {
   Delete,
   Modify,
 } from "../../../wailsjs/go/main/DataModel";
+import { List as TemplateList } from "../../../wailsjs/go/main/Template";
 import { model } from "../../../wailsjs/go/models";
 import { Ref } from "vue";
 import { useRouter } from "vue-router";
@@ -170,6 +201,7 @@ const rules = reactive({
   name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
   account: [{ required: true, message: "请输入账户", trigger: "blur" }],
   groupId: [{ required: true, message: "请选择用户组", trigger: "blur" }],
+  tpIds: [{ required: true, message: "请选择脚本模板", trigger: "blur" }],
 });
 
 // 分页
@@ -183,23 +215,24 @@ const form = reactive({
 });
 
 // 弹窗表单
-const dataForm = reactive<model.DataModel>(model.DataModel.createFrom({
-  name: "",
-  title: "",
-  makeType: 0,
-  mark: "",
-}));
+const dataForm = reactive<model.DataModel>(
+  model.DataModel.createFrom({
+    name: "",
+    title: "",
+    makeType: 0,
+    mark: "",
+  })
+);
 
-onMounted(() => {});
+onMounted(async () => {
+  tpTableData.value = await TemplateList("", 0, 0);
+});
 
 const tableData: Ref<model.DataModel[]> = ref([]);
+const tpTableData: Ref<model.CodeTemplate[]> = ref([]);
 
 const getData = async () => {
-  const data = await List(
-    form.condition,
-    pageNum.value,
-    pageSize.value
-  );
+  const data = await List(form.condition, pageNum.value, pageSize.value);
   tableData.value = data;
 };
 
@@ -208,6 +241,7 @@ const resetForm = () => {
   dataForm.id = "";
   dataForm.title = "";
   dataForm.makeType = 0;
+  dataForm.tpIds = [];
   dataForm.mark = "";
 };
 
@@ -216,6 +250,7 @@ const setForm = (value: any) => {
   dataForm.id = value.id;
   dataForm.title = value.title;
   dataForm.makeType = value.makeType;
+  dataForm.tpIds = value.tpIds;
   dataForm.mark = value.mark;
 };
 
@@ -241,6 +276,11 @@ const onChange = () => {
 
 const onQryClick = () => {
   getData();
+};
+
+// 获取脚本模板名称
+const getTPName = (value: string): string => {
+  return tpTableData.value.find((item: any) => item.id == value)?.title || "";
 };
 
 const onEditClick = (value: any) => {
@@ -300,14 +340,6 @@ const onSave = () => {
       console.log("表单验证失败");
     }
   });
-};
-
-// 弹窗打开时
-const onOpen = async () => {
-  // const res = await apiUserGroupList();
-  // if (res.code === 200) {
-  //   groupTableData.value = res.data;
-  // }
 };
 
 const onSizeChange = (value: number) => {

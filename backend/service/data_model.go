@@ -1,6 +1,8 @@
 package service
 
 import (
+	"strings"
+
 	"github.com/issueye/code_magic/backend/common/model"
 	"github.com/issueye/code_magic/backend/common/service"
 	"github.com/issueye/code_magic/backend/repository"
@@ -31,6 +33,7 @@ func (owner *DataModel) Modify(data *repository.RequestModifyDataModel) error {
 	updateMap := make(map[string]any)
 	updateMap["title"] = data.Title
 	updateMap["make_type"] = data.MakeType
+	updateMap["tp_ids"] = strings.Join(data.TPIds, ",")
 	updateMap["mark"] = data.Mark
 	return owner.GetDB().Model(&model.DataModel{}).Where("ID = ?", data.ID).Updates(&updateMap).Error
 }

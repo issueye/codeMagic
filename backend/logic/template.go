@@ -5,7 +5,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/issueye/code_magic/backend/common/model"
 	commonService "github.com/issueye/code_magic/backend/common/service"
 	"github.com/issueye/code_magic/backend/pkg/utils"
 	"github.com/issueye/code_magic/backend/service"
@@ -22,7 +21,7 @@ func (t *Template) SaveCodeToFile(tpId string, code string) error {
 	}
 
 	// 获取文件名称和文件类型
-	fileName := info.FileName + model.GetFileType(info.FileType)
+	fileName := fmt.Sprintf("%s.js", info.FileName)
 
 	path := filepath.Join("runtime", "static", "code")
 	return os.WriteFile(filepath.Join(path, fileName), []byte(code), 0644)
@@ -36,7 +35,7 @@ func (t *Template) GetCode(tpId string) (string, error) {
 		return "", err
 	}
 
-	fileName := info.FileName + model.GetFileType(info.FileType)
+	fileName := fmt.Sprintf("%s.js", info.FileName)
 	path := filepath.Join("runtime", "static", "code", fileName)
 
 	exist := utils.FileExist(path)
