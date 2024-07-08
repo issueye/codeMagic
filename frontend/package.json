@@ -19,6 +19,8 @@
     "@tailwindcss/typography": "^0.5.13",
     "@vueuse/core": "^10.11.0",
     "@vxe-ui/plugin-render-element": "^4.0.4",
+    "codemirror": "^5",
+    "codemirror-editor-vue3": "^2.7.0",
     "element-plus": "^2.7.6",
     "monaco-editor": "^0.50.0",
     "nanoid": "^5.0.7",

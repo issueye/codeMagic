@@ -7,19 +7,50 @@
   <BsMain>
     <template #body>
       <div class="flex justify-end mb-3">
-        <el-button type="primary" @click="onAddOneCellClick">新增一行</el-button>
+        <el-button type="primary" @click="onAddOneCellClick"
+          >新增一行</el-button
+        >
         <el-button type="primary" @click="onSaveClick">保存</el-button>
       </div>
 
       <div class="h-[calc(100% - 60px)]">
-        <vxe-table border show-overflow keep-source size="mini" ref="tableRef" :data="tableData"
-          :menu-config="menuConfig" :edit-rules="validRules" max-height="550" empty-text="没有数据"
-          :edit-config="{ trigger: 'click', mode: 'row', showStatus: true }" @menu-click="onCtxMenuClickEvent">
+        <vxe-table
+          border
+          show-overflow
+          keep-source
+          size="mini"
+          ref="tableRef"
+          :data="tableData"
+          :menu-config="menuConfig"
+          :edit-rules="validRules"
+          max-height="550"
+          empty-text="没有数据"
+          :edit-config="{ trigger: 'click', mode: 'row', showStatus: true }"
+          @menu-click="onCtxMenuClickEvent"
+        >
           <vxe-column type="seq" title="序号" width="70" />
-          <vxe-column field="title" title="标题" :edit-render="{ name: 'ElInput' }" />
-          <vxe-column field="name" title="名称" :edit-render="{ name: 'ElInput' }" />
-          <vxe-column field="columnType" title="数据类型" :edit-render="columnTypeRender" width="180" />
-          <vxe-column field="size" title="长度" width="180" :edit-render="{ name: 'ElInputNumber' }" />
+          <vxe-column
+            field="title"
+            title="标题"
+            :edit-render="{ name: 'ElInput' }"
+          />
+          <vxe-column
+            field="name"
+            title="名称"
+            :edit-render="{ name: 'ElInput' }"
+          />
+          <vxe-column
+            field="columnType"
+            title="数据类型"
+            :edit-render="columnTypeRender"
+            width="180"
+          />
+          <vxe-column
+            field="size"
+            title="长度"
+            width="180"
+            :edit-render="{ name: 'ElInputNumber' }"
+          />
         </vxe-table>
       </div>
     </template>
@@ -57,16 +88,16 @@ const menuConfig = reactive({
 });
 
 const columnTypeRender = reactive({
-  name: 'ElSelect',
+  name: "ElSelect",
   options: [
-    { value: 'int', label: 'int' },
-    { value: 'nvarchar', label: 'nvarchar' },
-    { value: 'bool', label: 'bool' },
-    { value: 'text', label: 'text' },
-    { value: 'datetime', label: 'datetime' },
-    { value: 'decimal', label: 'decimal' },
-  ]
-})
+    { value: "int", label: "int" },
+    { value: "nvarchar", label: "nvarchar" },
+    { value: "bool", label: "bool" },
+    { value: "text", label: "text" },
+    { value: "datetime", label: "datetime" },
+    { value: "decimal", label: "decimal" },
+  ],
+});
 
 const id = ref(route.query["id"]);
 const mdTitle = ref(route.query["title"]);
@@ -77,14 +108,13 @@ const validRules = ref({
   columnType: [{ required: true, message: "数据类型不能为空" }],
 });
 
-onMounted(() => { });
+onMounted(() => {});
 
 const tableData: Ref<model.ModelInfo[]> = ref([]);
 
 const getData = async () => {
   const data = await GetModelInfo(id.value as string);
   console.log("data", data);
-
   tableData.value = data;
 };
 
@@ -105,13 +135,12 @@ const validEvent = async () => {
   if ($table) {
     const errMap = await $table.validate();
     if (!errMap) {
-      // const data = $table.tableData;
       const tbdata = $table.getTableData();
       console.log("$table", tbdata.tableData);
       tableData.value = tbdata.tableData;
       await SaveModelInfo(id.value as string, tableData.value);
       getData();
-      ElMessage.success('保存成功');
+      ElMessage.success("保存成功");
     }
   }
 };
@@ -119,20 +148,22 @@ const validEvent = async () => {
 const onAddOneCellClick = async () => {
   const $table = tableRef.value;
   if ($table) {
-    const record = model.ModelInfo.createFrom(
-      {
-        title: "",
-        name: "",
-        columnType: '',
-        length: 0,
-      }
-    );
+    const record = model.ModelInfo.createFrom({
+      title: "",
+      name: "",
+      columnType: "",
+      length: 0,
+    });
     const { row: newRow } = await $table.insertAt(record, -1);
     await $table.setEditRow(newRow, "name");
   }
 };
 
-const onCtxMenuClickEvent: VxeTableEvents.MenuClick<model.ModelInfo> = ({ menu, row, column }) => {
+const onCtxMenuClickEvent: VxeTableEvents.MenuClick<model.ModelInfo> = ({
+  menu,
+  row,
+  column,
+}) => {
   const $table = tableRef.value;
   if ($table) {
     switch (menu.code) {

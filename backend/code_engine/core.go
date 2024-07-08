@@ -308,13 +308,6 @@ func (c *Core) run(name string, path string, vm *goja.Runtime) error {
 	return c.RunOnce(name, vm)
 }
 
-// ExportFunc
-// 导出JS方法
-// func (c *Core) ExportFunc(name string, fn any) error {
-// 	vm := c.GetRts()
-// 	return vm.ExportTo(vm.Get(name), fn)
-// }
-
 // RunString
 // 运行脚本 字符串
 func (c *Core) RunString(name string, src string) error {

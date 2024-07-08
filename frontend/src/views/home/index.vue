@@ -188,7 +188,7 @@ import {
   Modify,
 } from "../../../wailsjs/go/main/DataModel";
 import { List as TemplateList } from "../../../wailsjs/go/main/Template";
-import { RunCode } from '../../../wailsjs/go/main/DataModel';
+import { RunCode } from "../../../wailsjs/go/main/DataModel";
 import { model } from "../../../wailsjs/go/models";
 import { Ref } from "vue";
 import { useRouter } from "vue-router";
@@ -298,14 +298,11 @@ const onEditClick = (value: any) => {
   visible.value = true;
 };
 
-const onMakeCodeClick = (value:model.DataModel) => {
-  console.log('value', value.id);
+const onMakeCodeClick = (value: model.DataModel) => {
+  // console.log("value", value.id);
 
-  
-
-
-  RunCode(value.id)
-}
+  RunCode(value.id);
+};
 
 const onEditDataModelClick = (value: any) => {
   console.log("value", value);
@@ -344,7 +341,6 @@ const onSave = () => {
           getData();
           break;
         }
-
         case 1: {
           await Modify(dataForm);
           ElMessage.success("修改成功");

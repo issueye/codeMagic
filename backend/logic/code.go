@@ -1,19 +1,22 @@
 package logic
 
 import (
+	"context"
 	"fmt"
 	"path/filepath"
 
 	"github.com/issueye/code_magic/backend/code_engine"
+	"github.com/issueye/code_magic/backend/common/model"
 	commonService "github.com/issueye/code_magic/backend/common/service"
 	"github.com/issueye/code_magic/backend/global"
 	"github.com/issueye/code_magic/backend/service"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-type MainFunc func() string
+type MainFunc func() (string, error)
 
 // 运行代码
-func RunCode(dmId string) error {
+func RunCode(ctx context.Context, dmId string, isTest bool, tpCodeId string) error {
 	global.Log.Infof("开始运行代码，dmId: %s", dmId)
 
 	// 查询模板信息
@@ -36,36 +39,66 @@ func RunCode(dmId string) error {
 	core.SetGlobalPath(globalPath)
 	core.SetProperty("dm", "title", info.Title)
 	core.SetProperty("dm", "columns", columns)
+	core.ConsoleCallBack = func(args ...any) {
+		runtime.EventsEmit(ctx, "console", args...)
+	}
 
 	// 获取代码模板的脚本
 	tpSrv := commonService.NewService(&service.Template{})
-	tps, err := tpSrv.Gets(info.TPIds)
-	if err != nil {
-		return err
-	}
 
-	errArr := make([]error, 0)
-	for _, tp := range tps {
-		rts := core.GetRts()
-		var fn MainFunc
-		path := fmt.Sprintf("%s.js", tp.FileName)
-		global.Log.Infof("开始执行代码 %s", path)
-		err = core.ExportFunc("main", &fn, path, rts)
+	if !isTest {
+		tps, err := tpSrv.Gets(info.TPIds)
 		if err != nil {
-			global.Log.Errorf("导出[main]函数失败 %s", err)
-			errArr = append(errArr, err)
-			continue
+			return err
 		}
 
-		if fn != nil {
-			code := fn()
-			fmt.Printf("执行代码[%s] 结果: %s\n", tp.Title, code)
-		}
-	}
+		errArr := make([]error, 0)
+		for _, tp := range tps {
 
-	if len(errArr) > 0 {
-		return fmt.Errorf("执行代码失败 %s", errArr)
+			err = runCode(core, tp)
+			if err != nil {
+				errArr = append(errArr, err)
+			}
+		}
+
+		if len(errArr) > 0 {
+			return fmt.Errorf("执行代码失败 %s", errArr)
+		}
+	} else {
+		tp, err := tpSrv.Get(tpCodeId)
+		if err != nil {
+			return err
+		}
+
+		err = runCode(core, tp)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
+}
+
+func runCode(core *code_engine.Core, tp *model.CodeTemplate) (err error) {
+	rts := core.GetRts()
+	var fn MainFunc
+	path := fmt.Sprintf("%s.js", tp.FileName)
+	global.Log.Infof("开始执行代码 %s", path)
+	err = core.ExportFunc("main", &fn, path, rts)
+	if err != nil {
+		global.Log.Errorf("导出[main]函数失败 %s", err)
+		return err
+	}
+
+	if fn != nil {
+		code, err := fn()
+		if err != nil {
+			global.Log.Errorf("执行代码[%s]失败 %s", tp.Title, err)
+			return err
+		}
+
+		fmt.Printf("执行代码[%s] 结果: %s\n", tp.Title, code)
+	}
+
+	return
 }

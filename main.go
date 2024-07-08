@@ -30,9 +30,9 @@ func main() {
 	// 创建一个wails app
 	err := wails.Run(&options.App{
 		Title:     "code_magic",
-		Width:     1024,
+		Width:     1200,
 		Height:    768,
-		MinWidth:  1024,
+		MinWidth:  1200,
 		MinHeight: 768,
 		// MaxWidth:          1280,
 		// MaxHeight:         800,
@@ -57,8 +57,8 @@ func main() {
 		WindowStartState: options.Normal,
 		Bind: []interface{}{
 			app,
-			NewDataModel(),
-			NewTemplate(),
+			GetDataModel(),
+			GetTemplate(),
 		},
 		// Windows platform specific options
 		Windows: &windows.Options{

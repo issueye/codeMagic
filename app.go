@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 )
 
 // App struct
@@ -24,6 +23,11 @@ func (a *App) startup(ctx context.Context) {
 // domReady is called after front-end resources have been loaded
 func (a *App) domReady(ctx context.Context) {
 	// Add your action here
+	// fmt.Println("app -> domReady", "123123123123")
+	a.ctx = ctx
+
+	GetDataModel().Ctx = ctx
+	GetTemplate().Ctx = ctx
 }
 
 // beforeClose is called when the application is about to quit,
@@ -36,9 +40,4 @@ func (a *App) beforeClose(ctx context.Context) (prevent bool) {
 // shutdown is called at application termination
 func (a *App) shutdown(ctx context.Context) {
 	// Perform your teardown here
-}
-
-// Greet returns a greeting for the given name
-func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's show time!", name)
 }

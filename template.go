@@ -1,6 +1,8 @@
 package main
 
 import (
+	"context"
+
 	"github.com/issueye/code_magic/backend/common/model"
 	commonService "github.com/issueye/code_magic/backend/common/service"
 	"github.com/issueye/code_magic/backend/logic"
@@ -8,14 +10,20 @@ import (
 	"github.com/issueye/code_magic/backend/service"
 )
 
+var template *Template
+
 // 数据模型
 type Template struct {
-	BaseApp
+	Ctx context.Context
 }
 
 // NewApp creates a new App application struct
-func NewTemplate() *Template {
-	return &Template{}
+func GetTemplate() *Template {
+	if template == nil {
+		template = &Template{}
+	}
+
+	return template
 }
 
 // 创建数据模型
