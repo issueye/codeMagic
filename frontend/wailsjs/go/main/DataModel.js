@@ -22,6 +22,10 @@ export function Modify(arg1) {
   return window['go']['main']['DataModel']['Modify'](arg1);
 }
 
+export function RunCode(arg1) {
+  return window['go']['main']['DataModel']['RunCode'](arg1);
+}
+
 export function SaveModelInfo(arg1, arg2) {
   return window['go']['main']['DataModel']['SaveModelInfo'](arg1, arg2);
 }

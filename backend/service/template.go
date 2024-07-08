@@ -27,6 +27,13 @@ func (owner *Template) Get(id string) (*model.CodeTemplate, error) {
 	return info, owner.GetDB().Model(&model.CodeTemplate{}).Where("ID = ?", id).First(info).Error
 }
 
+// 通过ID 获取数据
+func (owner *Template) Gets(ids []string) ([]*model.CodeTemplate, error) {
+	info := make([]*model.CodeTemplate, 0)
+	err := owner.GetDB().Model(&model.CodeTemplate{}).Where("ID in (?)", ids).Find(&info).Error
+	return info, err
+}
+
 // 创建数据
 func (owner *Template) Modify(data *repository.RequestModifyTemplate) error {
 	updateMap := make(map[string]any)

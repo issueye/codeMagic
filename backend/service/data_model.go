@@ -43,6 +43,11 @@ func (owner *DataModel) Delete(id string) error {
 	return owner.GetDB().Delete(&model.DataModel{}, id).Error
 }
 
+func (owner *DataModel) GetById(id string) (*model.DataModel, error) {
+	info := &model.DataModel{}
+	return info, owner.GetDB().Model(&model.DataModel{}).Where("ID = ?", id).First(info).Error
+}
+
 // 获取数据列表
 func (owner *DataModel) List(data *model.Page[repository.RequestDataModelQuery]) ([]*model.DataModel, error) {
 	list := make([]*model.DataModel, 0)

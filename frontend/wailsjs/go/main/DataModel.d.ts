@@ -13,4 +13,6 @@ export function List(arg1:string,arg2:number,arg3:number):Promise<Array<model.Da
 
 export function Modify(arg1:repository.RequestModifyDataModel):Promise<void>;
 
+export function RunCode(arg1:string):Promise<void>;
+
 export function SaveModelInfo(arg1:string,arg2:Array<repository.RequestModelInfoSave>):Promise<void>;

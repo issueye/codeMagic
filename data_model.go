@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/issueye/code_magic/backend/common/model"
 	commonService "github.com/issueye/code_magic/backend/common/service"
+	"github.com/issueye/code_magic/backend/logic"
 	"github.com/issueye/code_magic/backend/repository"
 	"github.com/issueye/code_magic/backend/service"
 )
@@ -53,4 +54,14 @@ func (lc *DataModel) Delete(id string) error {
 func (lc *DataModel) Modify(data *repository.RequestModifyDataModel) error {
 	srv := commonService.NewService(&service.DataModel{})
 	return srv.Modify(data)
+}
+
+// 运行代码
+func (lc *DataModel) RunCode(dmId string) error {
+	err := logic.RunCode(dmId)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -69,11 +69,18 @@
           <el-table-column prop="mark" label="备注" show-overflow-tooltip />
           <el-table-column
             label="操作"
-            width="190"
+            width="230"
             align="center"
             fixed="right"
           >
             <template v-slot="{ row }">
+              <el-button
+                type="primary"
+                link
+                size="small"
+                @click="onMakeCodeClick(row)"
+                >生成代码</el-button
+              >
               <el-button
                 type="primary"
                 link
@@ -181,6 +188,7 @@ import {
   Modify,
 } from "../../../wailsjs/go/main/DataModel";
 import { List as TemplateList } from "../../../wailsjs/go/main/Template";
+import { RunCode } from '../../../wailsjs/go/main/DataModel';
 import { model } from "../../../wailsjs/go/models";
 import { Ref } from "vue";
 import { useRouter } from "vue-router";
@@ -289,6 +297,15 @@ const onEditClick = (value: any) => {
   setForm(value);
   visible.value = true;
 };
+
+const onMakeCodeClick = (value:model.DataModel) => {
+  console.log('value', value.id);
+
+  
+
+
+  RunCode(value.id)
+}
 
 const onEditDataModelClick = (value: any) => {
   console.log("value", value);
