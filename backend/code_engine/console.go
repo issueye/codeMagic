@@ -2,7 +2,6 @@ package code_engine
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 	"strings"
 
@@ -115,7 +114,7 @@ func (c console) log(level zapcore.Level, args ...goja.Value) {
 
 	// 写入回调
 	if c.CallBack != nil {
-		c.CallBack(fmt.Sprintf("%s %s", flag, msg))
+		c.CallBack(flag, msg)
 	}
 }
 

@@ -22,6 +22,8 @@ func (owner *DataModel) Create(data *repository.RequestCreateDataModel) error {
 	info := model.NewDataModel(&model.DataModelBase{
 		Title:    data.Title,
 		MakeType: data.MakeType,
+		TBName:   data.TBName,
+		TPIds:    data.TPIds,
 		Mark:     data.Mark,
 	})
 
@@ -33,6 +35,7 @@ func (owner *DataModel) Modify(data *repository.RequestModifyDataModel) error {
 	updateMap := make(map[string]any)
 	updateMap["title"] = data.Title
 	updateMap["make_type"] = data.MakeType
+	updateMap["table_name"] = data.TBName
 	updateMap["tp_ids"] = strings.Join(data.TPIds, ",")
 	updateMap["mark"] = data.Mark
 	return owner.GetDB().Model(&model.DataModel{}).Where("ID = ?", data.ID).Updates(&updateMap).Error

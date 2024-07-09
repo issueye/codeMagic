@@ -52,6 +52,7 @@ export namespace model {
 	    updatedAt: any;
 	    title: string;
 	    makeType: number;
+	    tableName: string;
 	    tpIds: string[];
 	    mark: string;
 	
@@ -66,6 +67,7 @@ export namespace model {
 	        this.updatedAt = this.convertValues(source["updatedAt"], null);
 	        this.title = source["title"];
 	        this.makeType = source["makeType"];
+	        this.tableName = source["tableName"];
 	        this.tpIds = source["tpIds"];
 	        this.mark = source["mark"];
 	    }
@@ -144,6 +146,7 @@ export namespace repository {
 	export class RequestCreateDataModel {
 	    title: string;
 	    makeType: number;
+	    tableName: string;
 	    tpIds: string[];
 	    mark: string;
 	
@@ -155,6 +158,7 @@ export namespace repository {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.title = source["title"];
 	        this.makeType = source["makeType"];
+	        this.tableName = source["tableName"];
 	        this.tpIds = source["tpIds"];
 	        this.mark = source["mark"];
 	    }
@@ -233,6 +237,7 @@ export namespace repository {
 	    updatedAt: any;
 	    title: string;
 	    makeType: number;
+	    tableName: string;
 	    tpIds: string[];
 	    mark: string;
 	
@@ -247,6 +252,7 @@ export namespace repository {
 	        this.updatedAt = this.convertValues(source["updatedAt"], null);
 	        this.title = source["title"];
 	        this.makeType = source["makeType"];
+	        this.tableName = source["tableName"];
 	        this.tpIds = source["tpIds"];
 	        this.mark = source["mark"];
 	    }

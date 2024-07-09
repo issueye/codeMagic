@@ -38,9 +38,11 @@ func RunCode(ctx context.Context, dmId string, isTest bool, tpCodeId string) err
 	globalPath := filepath.Join("runtime", "static", "code")
 	core.SetGlobalPath(globalPath)
 	core.SetProperty("dm", "title", info.Title)
+	core.SetProperty("dm", "tableName", info.TBName)
 	core.SetProperty("dm", "columns", columns)
 	core.ConsoleCallBack = func(args ...any) {
-		runtime.EventsEmit(ctx, "console", args...)
+		// 去除第一个参数，第一个参数是日志级别
+		runtime.EventsEmit(ctx, "console", args[1])
 	}
 
 	// 获取代码模板的脚本
@@ -55,7 +57,7 @@ func RunCode(ctx context.Context, dmId string, isTest bool, tpCodeId string) err
 		errArr := make([]error, 0)
 		for _, tp := range tps {
 
-			err = runCode(core, tp)
+			err = runCode(ctx, core, tp)
 			if err != nil {
 				errArr = append(errArr, err)
 			}
@@ -70,7 +72,7 @@ func RunCode(ctx context.Context, dmId string, isTest bool, tpCodeId string) err
 			return err
 		}
 
-		err = runCode(core, tp)
+		err = runCode(ctx, core, tp)
 		if err != nil {
 			return err
 		}
@@ -79,7 +81,7 @@ func RunCode(ctx context.Context, dmId string, isTest bool, tpCodeId string) err
 	return nil
 }
 
-func runCode(core *code_engine.Core, tp *model.CodeTemplate) (err error) {
+func runCode(ctx context.Context, core *code_engine.Core, tp *model.CodeTemplate) (err error) {
 	rts := core.GetRts()
 	var fn MainFunc
 	path := fmt.Sprintf("%s.js", tp.FileName)
@@ -98,6 +100,8 @@ func runCode(core *code_engine.Core, tp *model.CodeTemplate) (err error) {
 		}
 
 		fmt.Printf("执行代码[%s] 结果: %s\n", tp.Title, code)
+
+		runtime.EventsEmit(ctx, "console", fmt.Sprintf("执行代码[%s] 结果: %s\n", tp.Title, code))
 	}
 
 	return

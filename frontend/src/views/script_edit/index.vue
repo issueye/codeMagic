@@ -1,9 +1,9 @@
 <template>
   <BsHeader :title="mdTitle" description="生成对应代码的模板脚本">
     <template #actions>
-      <div class="flex w-[300px] justify-end">
-        <div class="flex grow mr-3">
-          <el-select v-model="dmId">
+      <div class="flex w-[400px] justify-end">
+        <div class="flex grow mr-10">
+          <el-select v-model="dmId" class="mr-1" placeholder="请选择数据模型">
             <el-option
               v-for="(item, index) in tableData"
               :key="index"
@@ -19,10 +19,10 @@
   </BsHeader>
   <BsMain>
     <template #body>
-      <div class="flex h-full">
-        <div ref="editorContainer" class="mr-1" style="width: 70%"></div>
-        <div class="w-[30%]">
-          <Codemirror v-model:value="logData" :options="cmOptions" border />
+      <div class="flex flex-col h-full border border-solid border-[#d9d9d9]">
+        <div ref="editorContainer" class="mr-1" style="height: 70%"></div>
+        <div class="h-[30%]">
+          <Codemirror v-model:value="logData" :options="cmOptions" />
         </div>
       </div>
     </template>
@@ -40,7 +40,7 @@ import { List, TestRunCode } from "../../../wailsjs/go/main/DataModel";
 
 import Codemirror, { createLog } from "codemirror-editor-vue3";
 import { model } from "../../../wailsjs/go/models";
-import { EventsOn } from "../../../wailsjs/runtime/runtime";
+import { EventsOn, EventsOff } from "../../../wailsjs/runtime/runtime";
 
 const router = useRouter();
 const route = useRoute();
@@ -107,10 +107,10 @@ onMounted(async () => {
   });
 });
 
-const logData = ref();
+const logData = ref('=========测试日志==========\n');
 
 const cmOptions = {
-  mode: "log",
+  mode: "fclog",
   theme: "default",
   lineWrapping: true,
   foldGutter: true,
@@ -125,12 +125,14 @@ const onBackClick = () => {
   router.push("/templates");
 };
 
-const onTestRunClick = () => {
-  logData.value = "";
+const onTestRunClick = async () => {
   EventsOn("console", (data: any) => {
-    logData.value += createLog(data, "info");
+    console.log('data', data);
+    logData.value += `${createLog(`${data}\n`, "info")}`;
   });
 
-  TestRunCode(dmId.value, id.value as string);
+  await TestRunCode(dmId.value, id.value as string);
+
+  EventsOff("console");
 };
 </script>

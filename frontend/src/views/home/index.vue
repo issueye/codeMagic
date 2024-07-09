@@ -41,6 +41,12 @@
             show-overflow-tooltip
           />
           <el-table-column
+            prop="tableName"
+            label="表名"
+            width="150"
+            show-overflow-tooltip
+          />
+          <el-table-column
             prop="makeType"
             label="生成类型"
             width="90"
@@ -143,6 +149,13 @@
             clearable
           />
         </el-form-item>
+        <el-form-item label="表名" prop="tableName">
+          <el-input
+            v-model="dataForm.tableName"
+            placeholder="请输入表名"
+            clearable
+          />
+        </el-form-item>
         <el-form-item label="生成类型" prop="makeType">
           <el-select v-model="dataForm.makeType" placeholder="请选择生成类型">
             <el-option :value="0" label="手动生成" />
@@ -210,6 +223,7 @@ const rules = reactive({
   account: [{ required: true, message: "请输入账户", trigger: "blur" }],
   groupId: [{ required: true, message: "请选择用户组", trigger: "blur" }],
   tpIds: [{ required: true, message: "请选择脚本模板", trigger: "blur" }],
+  tableName: [{ required: true, message: "请输入表名", trigger: "blur" }],
 });
 
 // 分页
@@ -249,6 +263,7 @@ const resetForm = () => {
   dataForm.id = "";
   dataForm.title = "";
   dataForm.makeType = 0;
+  dataForm.tableName = "";
   dataForm.tpIds = [];
   dataForm.mark = "";
 };
@@ -257,6 +272,7 @@ const resetForm = () => {
 const setForm = (value: any) => {
   dataForm.id = value.id;
   dataForm.title = value.title;
+  dataForm.tableName = value.tableName;
   dataForm.makeType = value.makeType;
   dataForm.tpIds = value.tpIds;
   dataForm.mark = value.mark;
@@ -301,7 +317,11 @@ const onEditClick = (value: any) => {
 const onMakeCodeClick = (value: model.DataModel) => {
   // console.log("value", value.id);
 
-  RunCode(value.id);
+  // RunCode(value.id);
+  router.push({
+    path: "/make_code",
+    query: { id: value.id, title: value.title },
+  });
 };
 
 const onEditDataModelClick = (value: any) => {
