@@ -66,7 +66,7 @@ func (lc *DataModel) Modify(data *repository.RequestModifyDataModel) error {
 
 // 运行代码
 func (lc *DataModel) RunCode(dmId string) error {
-	err := logic.RunCode(lc.Ctx, dmId, false, "")
+	err := logic.NewCodeLogic(lc.Ctx).RunCode(dmId, false, "")
 	if err != nil {
 		return err
 	}
@@ -75,7 +75,7 @@ func (lc *DataModel) RunCode(dmId string) error {
 }
 
 func (lc *DataModel) TestRunCode(dmId string, tpId string) error {
-	err := logic.RunCode(lc.Ctx, dmId, true, tpId)
+	err := logic.NewCodeLogic(lc.Ctx).RunCode(dmId, true, tpId)
 	if err != nil {
 		return err
 	}

@@ -107,7 +107,7 @@ onMounted(async () => {
   });
 });
 
-const logData = ref('=========测试日志==========\n');
+const logData = ref("=========测试日志==========\n");
 
 const cmOptions = {
   mode: "fclog",
@@ -126,13 +126,15 @@ const onBackClick = () => {
 };
 
 const onTestRunClick = async () => {
-  EventsOn("console", (data: any) => {
-    console.log('data', data);
-    logData.value += `${createLog(`${data}\n`, "info")}`;
-  });
+  try {
+    EventsOn("console", (data: any) => {
+      logData.value += `${createLog(`${data}\n`, "info")}`;
+    });
 
-  await TestRunCode(dmId.value, id.value as string);
-
-  EventsOff("console");
+    await TestRunCode(dmId.value, id.value as string);
+  } finally {
+    console.log("结束，关闭事件");
+    EventsOff("console");
+  }
 };
 </script>

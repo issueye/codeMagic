@@ -167,7 +167,7 @@ import {
   Delete,
   Modify,
 } from "../../../wailsjs/go/main/Template";
-import { model } from "../../../wailsjs/go/models";
+import { model, repository } from "../../../wailsjs/go/models";
 import { Ref } from "vue";
 import { useRouter } from "vue-router";
 
@@ -215,7 +215,10 @@ onMounted(() => {});
 const tableData: Ref<model.CodeTemplate[]> = ref([]);
 
 const getData = async () => {
-  const data = await List(form.condition, pageNum.value, pageSize.value);
+  let send = repository.RequestTemplateQuery.createFrom({
+    condition: form.condition,
+  });
+  const data = await List(send, pageNum.value, pageSize.value);
   tableData.value = data;
 };
 

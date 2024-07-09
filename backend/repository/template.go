@@ -12,5 +12,6 @@ type RequestCreateTemplate struct {
 
 // 查询请求数据
 type RequestTemplateQuery struct {
-	Condition string `json:"condition"` // 条件
+	Condition string   `json:"condition"` // 条件
+	Ids       []string `json:"ids"`       // 模板id
 }

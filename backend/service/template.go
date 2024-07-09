@@ -58,6 +58,10 @@ func (owner *Template) List(data *model.Page[repository.RequestTemplateQuery]) (
 			db = db.Where("(title like ? file_name like ? file_type like ? or mark like ?)", "%"+data.Condition.Condition+"%", "%"+data.Condition.Condition+"%")
 		}
 
+		if len(data.Condition.Ids) > 0 {
+			db = db.Where("id in (?)", data.Condition.Ids)
+		}
+
 		return db, nil
 	})
 

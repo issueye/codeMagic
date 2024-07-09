@@ -32,10 +32,9 @@ func (app *Template) Create(data *repository.RequestCreateTemplate) error {
 	return srv.Create(data)
 }
 
-func (app *Template) List(condition string, page, size int) ([]*model.CodeTemplate, error) {
+func (app *Template) List(condition repository.RequestTemplateQuery, page, size int) ([]*model.CodeTemplate, error) {
 	srv := commonService.NewService(&service.Template{})
-	qry := model.NewPage(repository.RequestTemplateQuery{})
-	qry.Condition.Condition = condition
+	qry := model.NewPage(condition)
 	qry.PageNum = int64(page)
 	qry.PageSize = int64(size)
 

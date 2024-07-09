@@ -9,7 +9,7 @@ export function Delete(arg1:string):Promise<void>;
 
 export function GetCode(arg1:string):Promise<string>;
 
-export function List(arg1:string,arg2:number,arg3:number):Promise<Array<model.CodeTemplate>>;
+export function List(arg1:repository.RequestTemplateQuery,arg2:number,arg3:number):Promise<Array<model.CodeTemplate>>;
 
 export function Modify(arg1:repository.RequestModifyTemplate):Promise<void>;
 

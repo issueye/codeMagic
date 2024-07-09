@@ -202,7 +202,7 @@ import {
 } from "../../../wailsjs/go/main/DataModel";
 import { List as TemplateList } from "../../../wailsjs/go/main/Template";
 import { RunCode } from "../../../wailsjs/go/main/DataModel";
-import { model } from "../../../wailsjs/go/models";
+import { model, repository } from "../../../wailsjs/go/models";
 import { Ref } from "vue";
 import { useRouter } from "vue-router";
 
@@ -247,7 +247,11 @@ const dataForm = reactive<model.DataModel>(
 );
 
 onMounted(async () => {
-  tpTableData.value = await TemplateList("", 0, 0);
+  tpTableData.value = await TemplateList(
+    repository.RequestTemplateQuery.createFrom({ condition: "" }),
+    0,
+    0
+  );
 });
 
 const tableData: Ref<model.DataModel[]> = ref([]);
@@ -315,12 +319,9 @@ const onEditClick = (value: any) => {
 };
 
 const onMakeCodeClick = (value: model.DataModel) => {
-  // console.log("value", value.id);
-
-  // RunCode(value.id);
   router.push({
     path: "/make_code",
-    query: { id: value.id, title: value.title },
+    query: { id: value.id, title: value.title, tpIds: value.tpIds },
   });
 };
 

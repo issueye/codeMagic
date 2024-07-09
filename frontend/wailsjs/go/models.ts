@@ -319,6 +319,20 @@ export namespace repository {
 		    return a;
 		}
 	}
+	export class RequestTemplateQuery {
+	    condition: string;
+	    ids: string[];
+	
+	    static createFrom(source: any = {}) {
+	        return new RequestTemplateQuery(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.condition = source["condition"];
+	        this.ids = source["ids"];
+	    }
+	}
 
 }
 
