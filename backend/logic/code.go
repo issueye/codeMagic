@@ -3,14 +3,13 @@ package logic
 import (
 	"context"
 	"fmt"
-	"os"
 	"path/filepath"
-	"regexp"
 
 	"github.com/issueye/code_magic/backend/code_engine"
 	"github.com/issueye/code_magic/backend/common/model"
 	commonService "github.com/issueye/code_magic/backend/common/service"
 	"github.com/issueye/code_magic/backend/global"
+	"github.com/issueye/code_magic/backend/repository"
 	"github.com/issueye/code_magic/backend/service"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -18,6 +17,7 @@ import (
 type MainFunc func() (string, error)
 
 const CONSOLE_EVENT = "console"
+const CODE_PUSH_EVENT = "code_push"
 
 type CodeLogic struct {
 	ctx context.Context
@@ -108,47 +108,20 @@ func (lc *CodeLogic) RunCode(dmId string, isTest bool, tpCodeId string) error {
 	return nil
 }
 
-// checkMainFunc
-// 检查代码中是否包含 main 函数
-func (lc *CodeLogic) checkMainFunc(path string, tp *model.CodeTemplate) error {
-	// 加载代码，使用正则表达式判断代码中是否包含 main 函数
-	runtimePath := filepath.Join("runtime", "static", "code")
-	codeData, err := os.ReadFile(filepath.Join(runtimePath, path))
-	if err != nil {
-		runtime.EventsEmit(lc.ctx, CONSOLE_EVENT, fmt.Sprintf("读取代码[%s]失败 %s", tp.Title, err))
-		return err
-	}
-
-	codeStr := string(codeData)
-	// 使用正则表达式判断代码中是否包含 main 函数
-	runtime.EventsEmit(lc.ctx, CONSOLE_EVENT, fmt.Sprintf("开始匹配代码[%s]中是否包含 main 函数", tp.Title))
-	matched, err := regexp.MatchString(`(?s)(?:^|\n)\s*(?://.*?\n|/\*.*?\*/\s*)*\s*func\s+main\s*\(`, codeStr)
-	if err != nil {
-		runtime.EventsEmit(lc.ctx, CONSOLE_EVENT, fmt.Sprintf("正则表达式匹配失败 %s", err))
-		return err
-	}
-
-	if !matched {
-		runtime.EventsEmit(lc.ctx, CONSOLE_EVENT, fmt.Sprintf("代码[%s]中未找到 main 函数", tp.Title))
-		return fmt.Errorf("代码[%s]中未找到 main 函数", tp.Title)
-	}
-
-	return nil
-}
-
 func (lc *CodeLogic) runCode(core *code_engine.Core, tp *model.CodeTemplate) (err error) {
 
 	path := fmt.Sprintf("%s.js", tp.FileName)
 	global.Log.Infof("开始执行代码 %s", path)
 
-	err = lc.checkMainFunc(path, tp)
-	if err != nil {
-		return err
-	}
-
 	rts := core.GetRts()
 	var fn MainFunc
 	runtime.EventsEmit(lc.ctx, CONSOLE_EVENT, "开始导出[main]函数")
+	err = core.CheckFunc("main", path)
+	if err != nil {
+		runtime.EventsEmit(lc.ctx, CONSOLE_EVENT, fmt.Sprintf("检查代码失败，未能正确导出 [main] 方法 %s", err))
+		return err
+	}
+
 	err = core.ExportFunc("main", &fn, path, rts)
 	if err != nil {
 		global.Log.Errorf("导出[main]函数失败 %s", err)
@@ -165,6 +138,11 @@ func (lc *CodeLogic) runCode(core *code_engine.Core, tp *model.CodeTemplate) (er
 
 		fmt.Printf("执行代码[%s] 结果: %s\n", tp.Title, code)
 		runtime.EventsEmit(lc.ctx, CONSOLE_EVENT, fmt.Sprintf("执行代码[%s] 结果: %s\n", tp.Title, code))
+
+		push := new(repository.PushCode)
+		push.Id = tp.ID
+		push.CodeContent = code
+		runtime.EventsEmit(lc.ctx, CODE_PUSH_EVENT, push)
 	}
 
 	return

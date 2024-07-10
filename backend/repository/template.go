@@ -15,3 +15,8 @@ type RequestTemplateQuery struct {
 	Condition string   `json:"condition"` // 条件
 	Ids       []string `json:"ids"`       // 模板id
 }
+
+type PushCode struct {
+	Id          string `json:"id"`           // 模板id
+	CodeContent string `json:"code_content"` // 代码内容
+}

@@ -270,6 +270,31 @@ func (c *Core) CallMain(name string, path string, vm *goja.Runtime) error {
 	return nil
 }
 
+func (c *Core) CheckFunc(name, path string) error {
+	vm := c.GetRts()
+
+	// 编译
+	err := c.Compile(name, path)
+	if err != nil {
+		return err
+	}
+
+	// 运行
+	err = c.RunOnce(name, vm)
+	if err != nil {
+		return err
+	}
+
+	nameFunc := vm.Get(name)
+
+	_, ok := goja.AssertFunction(nameFunc)
+	if !ok {
+		return fmt.Errorf("%s function not found", name)
+	}
+
+	return nil
+}
+
 func (c *Core) ExportFunc(name string, fn any, path string, vm *goja.Runtime) error {
 	// 编译
 	err := c.Compile(name, path)
