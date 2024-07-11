@@ -28,6 +28,7 @@ func (a *App) domReady(ctx context.Context) {
 
 	GetDataModel().Ctx = ctx
 	GetTemplate().Ctx = ctx
+	GeDataSource().Ctx = ctx
 }
 
 // beforeClose is called when the application is about to quit,

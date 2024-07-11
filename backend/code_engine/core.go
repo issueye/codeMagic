@@ -15,15 +15,6 @@ const (
 	GoPlugins = "lichee"
 )
 
-var (
-	LogMap = make(map[string]*ZapLogger) // 日志对象
-)
-
-type ZapLogger struct {
-	log   *zap.Logger
-	Close func()
-}
-
 // Core
 // goja运行时核心的结构体
 type Core struct {
@@ -259,7 +250,10 @@ func (c *Core) RunString(name string, src string) error {
 		return err
 	}
 
-	return c.RunOnce(name, nil)
+	rt := c.GetRuntime()
+	defer c.PutRuntime(rt)
+
+	return c.RunOnce(name, rt)
 }
 
 // SetGlobalProperty

@@ -6,6 +6,18 @@ import (
 	"github.com/issueye/code_magic/backend/pkg/utils"
 )
 
+// 数据模型
+type CodeTemplate struct {
+	Base
+	CodeTemplateBase
+}
+
+// TableName
+// 表名称
+func (CodeTemplate) TableName() string {
+	return "code_template"
+}
+
 type CodeTemplateBase struct {
 	Title    string `binding:"required" label:"名称" gorm:"column:title;size:300;comment:标题;" json:"title"`            // 标题
 	FileName string `binding:"required" label:"文件名" gorm:"column:file_name;size:300;comment:文件名;" json:"fileName"`   // 文件名
@@ -22,18 +34,6 @@ var fileTypeMap = map[int]string{
 // 获取文件类型
 func GetFileType(code int) string {
 	return fileTypeMap[code]
-}
-
-// 数据模型
-type CodeTemplate struct {
-	Base
-	CodeTemplateBase
-}
-
-// TableName
-// 表名称
-func (CodeTemplate) TableName() string {
-	return "code_template"
 }
 
 func NewCodeTemplate(base *CodeTemplateBase) *CodeTemplate {

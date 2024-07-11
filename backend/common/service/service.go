@@ -161,18 +161,6 @@ func Filter[T any](srv BaseIntf, tableName string, req *model.Page[T], list inte
 	if err != nil {
 		return err
 	}
-	ref := reflect.ValueOf(req)
-	// 判断 ref 是否是 ptr 类型
-	if ref.Kind() == reflect.Ptr {
-		ref = ref.Elem()
-	}
-
-	// 判断 req 是否有 Total 字段
-	// 如果有则将count 赋值给 req.Total
-	if !ref.FieldByName("Total").IsValid() {
-		return errors.New("请求参数错误，传入参数中没有 Total 字段")
-	}
-	ref.FieldByName("Total").SetInt(count)
 
 	req.Total = count
 	pageNum := req.PageNum

@@ -121,6 +121,7 @@ func (lc *CodeLogic) runCode(core *code_engine.Core, tp *model.CodeTemplate) (er
 	err = core.ExportFunc("main", path, &fn)
 	if err != nil {
 		global.Log.Errorf("导出[main]函数失败 %s", err)
+		runtime.EventsEmit(lc.ctx, CONSOLE_EVENT, fmt.Sprintf("导出[main]函数失败 %s", err))
 		return err
 	}
 

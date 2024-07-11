@@ -14,15 +14,10 @@ const menu = [
   { text: "首页", href: "/home", icon: "material-symbols:home-app-logo" },
   {
     text: "数据源",
-    href: "/datasets",
+    href: "/data_source",
     icon: "material-symbols-light:dataset-linked-outline-sharp",
   },
   { text: "模板", href: "/templates", icon: "carbon:template" },
-  // {
-  //   text: "用户",
-  //   href: "/users",
-  //   icon: "material-symbols:supervisor-account-outline-rounded",
-  // },
 ];
 // 侧边栏导航激活样式
 const activeClass = "text-blue-600 dark:text-blue-400";
@@ -43,14 +38,13 @@ const isMaximised = ref(false);
       <div
         class="mt-12 my-4 flex flex-col gap-6 text-2xl text-gray-500 dark:text-gray-200"
       >
-        <router-link
-          v-for="item in menu"
-          :key="item.text"
-          :to="item.href"
-          v-slot="{ isActive }"
-        >
-          <Icon :icon="item.icon" :class="isActive && activeClass" />
-        </router-link>
+        <div v-for="item in menu" :key="item.text">
+          <el-tooltip effect="dark" :content="item.text" placement="right">
+            <router-link :to="item.href" v-slot="{ isActive }">
+              <Icon :icon="item.icon" :class="isActive && activeClass" />
+            </router-link>
+          </el-tooltip>
+        </div>
       </div>
       <div
         class="my-4 flex flex-col gap-4 text-2xl text-gray-500 dark:text-gray-200"

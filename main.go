@@ -59,6 +59,7 @@ func main() {
 			app,
 			GetDataModel(),
 			GetTemplate(),
+			GeDataSource(),
 		},
 		// Windows platform specific options
 		Windows: &windows.Options{
