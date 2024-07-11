@@ -10,7 +10,7 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-type ConsoleCallBack = func(args ...any)
+type ConsoleCallBack func(args ...any)
 
 type console struct {
 	logger   *zap.Logger

@@ -48,8 +48,20 @@
           <vxe-column
             field="size"
             title="长度"
-            width="180"
-            :edit-render="{ name: 'ElInputNumber' }"
+            width="100"
+            :edit-render="{ name: 'ElInputNumber', props: { controlsPosition: 'right' }}"
+          />
+          <vxe-column
+            field="isPk"
+            title="主键"
+            width="80"
+            :cell-render="{ name: 'ElSwitch',props: { activeValue: 1, inactiveValue: 0 } }"
+          />
+          <vxe-column
+            field="extension"
+            title="拓展"
+            width="190"
+            :edit-render="extensionRender"
           />
         </vxe-table>
       </div>
@@ -89,6 +101,9 @@ const menuConfig = reactive({
 
 const columnTypeRender = reactive({
   name: "ElSelect",
+  props: {
+    placeholder: "请选择数据类型",
+  },
   options: [
     { value: "int", label: "int" },
     { value: "nvarchar", label: "nvarchar" },
@@ -96,6 +111,22 @@ const columnTypeRender = reactive({
     { value: "text", label: "text" },
     { value: "datetime", label: "datetime" },
     { value: "decimal", label: "decimal" },
+  ],
+});
+
+const extensionRender = reactive({
+  name: "ElSelect",
+  props: {
+    multiple: true,
+    collapseTags: true,
+    placeholder: '拓展信息',
+  },
+  options: [
+    { value: "isLike", label: "模糊查询" },
+    { value: "isSearch", label: "精确查询" },
+    { value: "isOrder", label: "排序" },
+    { value: "isShow", label: "显示" },
+    { value: "isEdit", label: "编辑" },
   ],
 });
 
@@ -153,6 +184,7 @@ const onAddOneCellClick = async () => {
       name: "",
       columnType: "",
       length: 0,
+      extension: ['isShow'],
     });
     const { row: newRow } = await $table.insertAt(record, -1);
     await $table.setEditRow(newRow, "name");

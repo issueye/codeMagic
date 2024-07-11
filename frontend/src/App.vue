@@ -18,11 +18,11 @@ const menu = [
     icon: "material-symbols-light:dataset-linked-outline-sharp",
   },
   { text: "模板", href: "/templates", icon: "carbon:template" },
-  {
-    text: "用户",
-    href: "/users",
-    icon: "material-symbols:supervisor-account-outline-rounded",
-  },
+  // {
+  //   text: "用户",
+  //   href: "/users",
+  //   icon: "material-symbols:supervisor-account-outline-rounded",
+  // },
 ];
 // 侧边栏导航激活样式
 const activeClass = "text-blue-600 dark:text-blue-400";

@@ -5,6 +5,7 @@ import (
 
 	"github.com/issueye/code_magic/backend/common/model"
 	commonService "github.com/issueye/code_magic/backend/common/service"
+	"github.com/issueye/code_magic/backend/global"
 	"github.com/issueye/code_magic/backend/logic"
 	"github.com/issueye/code_magic/backend/repository"
 	"github.com/issueye/code_magic/backend/service"
@@ -49,6 +50,19 @@ func (lc *DataModel) GetModelInfo(modelId string) ([]*model.ModelInfo, error) {
 
 func (lc *DataModel) SaveModelInfo(modelId string, data []*repository.RequestModelInfoSave) error {
 	srv := commonService.NewService(&service.DataModel{})
+	global.Log.Info("开启事务")
+	srv.OpenTx()
+	var err error
+	defer func() {
+		if err != nil {
+			global.Log.Errorf("保存模型信息失败 数据回滚: %s", err)
+			srv.Rollback()
+			return
+		}
+		global.Log.Info("保存模型信息成功 数据提交")
+		srv.Commit()
+	}()
+
 	return srv.SaveModelInfo(modelId, data)
 }
 

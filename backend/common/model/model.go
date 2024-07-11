@@ -2,7 +2,7 @@ package model
 
 import (
 	"database/sql/driver"
-	"fmt"
+	"errors"
 	"strings"
 	"time"
 )
@@ -27,27 +27,52 @@ type Base struct {
 // 数组数据类型 数据中以逗号分隔的字符串
 type Arr []string
 
-// 实现数据库驱动接口
-func (a *Arr) Scan(value interface{}) error {
-	// 数据库驱动将数据转换为字符串
-	if v, ok := value.(string); ok {
+// 存入数据库
+func (arr Arr) Value() (driver.Value, error) {
+	if len(arr) > 0 {
+		str := arr[0]
+		for _, v := range arr[1:] {
+			str += "," + v
+		}
+		return str, nil
+	} else {
+		return "", nil
+	}
+}
 
-		*a = Arr(strings.Split(v, ","))
+// 从数据库取数据
+func (arr *Arr) Scan(value interface{}) error {
+	str, ok := value.(string)
+	if !ok {
+		return errors.New("不匹配的数据类型")
+	}
+	*arr = strings.Split(string(str), ",")
+	return nil
+}
+
+func (arr *Arr) UnmarshalJSON(data []byte) error {
+	d := string(data)
+
+	if d == "null" {
+		*arr = []string{}
 		return nil
 	}
 
-	return fmt.Errorf("类型错误")
-}
+	// 处理 ["983193","983173"] 这种情况
+	if strings.HasPrefix(d, "[") || strings.HasPrefix(d, "]") {
+		d = strings.Trim(d, "[")
+		d = strings.Trim(d, "]")
+	}
 
-func (a *Arr) Value() (driver.Value, error) {
-	return strings.Join(*a, ","), nil
-}
+	if d != "" {
+		arrData := strings.Split(d, ",")
+		for _, data := range arrData {
+			data = strings.Trim(data, "\"")
+			*arr = append(*arr, data)
+		}
+	} else {
+		*arr = []string{}
+	}
 
-func (a *Arr) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf(`["%s"]`, strings.Join(*a, `","`))), nil
-}
-
-func (a *Arr) UnmarshalJSON(data []byte) error {
-	*a = Arr(strings.Split(string(data[2:len(data)-2]), `","`))
 	return nil
 }

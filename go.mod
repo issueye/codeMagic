@@ -13,6 +13,7 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/google/uuid v1.6.0
 	github.com/hashicorp/go-plugin v1.6.1
+	github.com/sohaha/zlsgo v1.7.14
 	github.com/syndtr/goleveldb v1.0.0
 	github.com/wailsapp/wails/v2 v2.9.1
 	go.uber.org/zap v1.27.0

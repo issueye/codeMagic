@@ -69,6 +69,8 @@ func (lc *CodeLogic) RunCode(dmId string, isTest bool, tpCodeId string) error {
 		runtime.EventsEmit(lc.ctx, CONSOLE_EVENT, args[1])
 	}
 
+	core.InitPool()
+
 	// 获取代码模板的脚本
 	tpSrv := commonService.NewService(&service.Template{})
 
@@ -113,16 +115,10 @@ func (lc *CodeLogic) runCode(core *code_engine.Core, tp *model.CodeTemplate) (er
 	path := fmt.Sprintf("%s.js", tp.FileName)
 	global.Log.Infof("开始执行代码 %s", path)
 
-	rts := core.GetRts()
 	var fn MainFunc
 	runtime.EventsEmit(lc.ctx, CONSOLE_EVENT, "开始导出[main]函数")
-	err = core.CheckFunc("main", path)
-	if err != nil {
-		runtime.EventsEmit(lc.ctx, CONSOLE_EVENT, fmt.Sprintf("检查代码失败，未能正确导出 [main] 方法 %s", err))
-		return err
-	}
 
-	err = core.ExportFunc("main", &fn, path, rts)
+	err = core.ExportFunc("main", path, &fn)
 	if err != nil {
 		global.Log.Errorf("导出[main]函数失败 %s", err)
 		return err

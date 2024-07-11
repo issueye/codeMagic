@@ -101,6 +101,9 @@ export namespace model {
 	    name: string;
 	    columnType: string;
 	    size: number;
+	    isPk: number;
+	    extension: string[];
+	    controlType: string;
 	    mark: string;
 	
 	    static createFrom(source: any = {}) {
@@ -117,6 +120,9 @@ export namespace model {
 	        this.name = source["name"];
 	        this.columnType = source["columnType"];
 	        this.size = source["size"];
+	        this.isPk = source["isPk"];
+	        this.extension = source["extension"];
+	        this.controlType = source["controlType"];
 	        this.mark = source["mark"];
 	    }
 	
@@ -192,6 +198,9 @@ export namespace repository {
 	    name: string;
 	    columnType: string;
 	    size: number;
+	    isPk: number;
+	    extension: string[];
+	    controlType: string;
 	    mark: string;
 	
 	    static createFrom(source: any = {}) {
@@ -208,6 +217,9 @@ export namespace repository {
 	        this.name = source["name"];
 	        this.columnType = source["columnType"];
 	        this.size = source["size"];
+	        this.isPk = source["isPk"];
+	        this.extension = source["extension"];
+	        this.controlType = source["controlType"];
 	        this.mark = source["mark"];
 	    }
 	

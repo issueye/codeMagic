@@ -69,6 +69,7 @@ func (owner *DataModel) List(data *model.Page[repository.RequestDataModelQuery])
 // SaveModelInfo
 // 保存数据模型明细信息
 func (owner *DataModel) SaveModelInfo(modelId string, data []*repository.RequestModelInfoSave) error {
+
 	// 先删除模型明细信息
 	err := owner.GetDB().Delete(&model.ModelInfo{}, "data_model_id = ?", modelId).Error
 	if err != nil {
@@ -84,6 +85,9 @@ func (owner *DataModel) SaveModelInfo(modelId string, data []*repository.Request
 			Name:        item.Name,
 			ColumnType:  item.ColumnType,
 			Size:        item.Size,
+			IsPk:        item.IsPk,
+			Extension:   item.Extension,
+			ControlType: item.ControlType,
 			Mark:        item.Mark,
 		})
 	}

@@ -41,6 +41,9 @@ type ModelInfoBase struct {
 	Name        string `binding:"required" label:"标识" gorm:"column:name;size:300;comment:标识;" json:"name"`                     // 标识
 	ColumnType  string `binding:"required" label:"类型" gorm:"column:column_type;size:50;comment:类型;" json:"columnType"`         // 类型
 	Size        int    `binding:"required" label:"长度" gorm:"column:size;type:int;comment:长度;" json:"size"`                     // 长度
+	IsPk        int    `binding:"required" label:"是否主键" gorm:"column:is_pk;type:int;comment:是否主键;" json:"isPk"`                // 是否主键
+	Extension   Arr    `binding:"required" label:"扩展" gorm:"column:extension;size:1000;comment:扩展;" json:"extension"`          // 扩展
+	ControlType string `binding:"required" label:"控件类型" gorm:"column:control_type;size:50;comment:控件类型;" json:"controlType"`   // 控件类型
 	Mark        string `binding:"required" label:"备注" gorm:"column:mark;size:300;comment:备注;" json:"mark"`                     // 备注
 }
 
