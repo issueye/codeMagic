@@ -13,6 +13,7 @@ type Config struct {
 	Host     string `json:"host"`     // 服务器地址
 	Database string `json:"name"`     // 数据库
 	Port     int    `json:"port"`     // 端口号
+	Path     string `json:"path"`     // 路径
 	LogMode  bool   `json:"logMode"`  // 日志模式
 }
 

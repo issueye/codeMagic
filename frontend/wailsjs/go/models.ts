@@ -1,3 +1,36 @@
+export namespace main {
+	
+	export class ColumnInfo {
+	    name: string;
+	    type: string;
+	    size: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new ColumnInfo(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.name = source["name"];
+	        this.type = source["type"];
+	        this.size = source["size"];
+	    }
+	}
+	export class TablelInfo {
+	    table_name: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new TablelInfo(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.table_name = source["table_name"];
+	    }
+	}
+
+}
+
 export namespace model {
 	
 	export class CodeTemplate {
@@ -99,11 +132,13 @@ export namespace model {
 	    title: string;
 	    host: string;
 	    port: number;
+	    database: string;
 	    user_name: string;
 	    password: string;
 	    db_type: string;
 	    schema: string;
 	    path: string;
+	    mark: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new DataSource(source);
@@ -117,11 +152,13 @@ export namespace model {
 	        this.title = source["title"];
 	        this.host = source["host"];
 	        this.port = source["port"];
+	        this.database = source["database"];
 	        this.user_name = source["user_name"];
 	        this.password = source["password"];
 	        this.db_type = source["db_type"];
 	        this.schema = source["schema"];
 	        this.path = source["path"];
+	        this.mark = source["mark"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -205,11 +242,13 @@ export namespace repository {
 	    title: string;
 	    host: string;
 	    port: number;
+	    database: string;
 	    user_name: string;
 	    password: string;
 	    db_type: string;
 	    schema: string;
 	    path: string;
+	    mark: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new CreateDataSource(source);
@@ -220,11 +259,13 @@ export namespace repository {
 	        this.title = source["title"];
 	        this.host = source["host"];
 	        this.port = source["port"];
+	        this.database = source["database"];
 	        this.user_name = source["user_name"];
 	        this.password = source["password"];
 	        this.db_type = source["db_type"];
 	        this.schema = source["schema"];
 	        this.path = source["path"];
+	        this.mark = source["mark"];
 	    }
 	}
 	export class RequestCreateDataModel {
@@ -432,11 +473,13 @@ export namespace repository {
 	    title: string;
 	    host: string;
 	    port: number;
+	    database: string;
 	    user_name: string;
 	    password: string;
 	    db_type: string;
 	    schema: string;
 	    path: string;
+	    mark: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new UpdateDataSource(source);
@@ -450,11 +493,13 @@ export namespace repository {
 	        this.title = source["title"];
 	        this.host = source["host"];
 	        this.port = source["port"];
+	        this.database = source["database"];
 	        this.user_name = source["user_name"];
 	        this.password = source["password"];
 	        this.db_type = source["db_type"];
 	        this.schema = source["schema"];
 	        this.path = source["path"];
+	        this.mark = source["mark"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {

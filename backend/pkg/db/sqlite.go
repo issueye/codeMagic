@@ -9,7 +9,7 @@ import (
 	glogger "gorm.io/gorm/logger"
 )
 
-func InitSqlite(path string, log *zap.Logger) *gorm.DB {
+func InitSqlite(path string, log *zap.Logger) (*gorm.DB, error) {
 	newLogger := glogger.New(
 		Writer{
 			log:    log,
@@ -30,12 +30,13 @@ func InitSqlite(path string, log *zap.Logger) *gorm.DB {
 
 	if err != nil {
 		log.Sugar().Panicf("连接数据库异常: %v", err)
-		panic(err)
+		// panic(err)
+		return nil, err
 	}
 
 	db = db.Debug()
 
 	log.Sugar().Infof("初始化sqlite数据库完成! dsn: %s", path)
 
-	return db
+	return db, nil
 }

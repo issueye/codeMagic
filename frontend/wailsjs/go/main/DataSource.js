@@ -10,6 +10,18 @@ export function Delete(arg1) {
   return window['go']['main']['DataSource']['Delete'](arg1);
 }
 
+export function GetColumns(arg1, arg2) {
+  return window['go']['main']['DataSource']['GetColumns'](arg1, arg2);
+}
+
+export function GetTableList(arg1) {
+  return window['go']['main']['DataSource']['GetTableList'](arg1);
+}
+
+export function LinkDataSource(arg1) {
+  return window['go']['main']['DataSource']['LinkDataSource'](arg1);
+}
+
 export function List(arg1, arg2, arg3) {
   return window['go']['main']['DataSource']['List'](arg1, arg2, arg3);
 }

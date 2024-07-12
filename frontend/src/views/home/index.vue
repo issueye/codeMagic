@@ -329,7 +329,7 @@ const onEditDataModelClick = (value: any) => {
   console.log("value", value);
   router.push({
     path: "/data_model",
-    query: { id: value.id, title: value.title },
+    query: { id: value.id, title: value.title, makeType: value.makeType },
   });
 };
 

@@ -6,11 +6,25 @@
   </BsHeader>
   <BsMain>
     <template #body>
-      <div class="flex justify-end mb-3">
-        <el-button type="primary" @click="onAddOneCellClick"
+      <div class="flex justify-between mb-3">
+        <div class="w-[500px] flex items-center gap-2" v-if="makeType == '1'">
+          <el-select placeholder="请选择数据源" v-model="selectDataSource" clearable>
+            <el-option v-for="(item, index) in dsData" :key="index" :value="item.id" :label="item.title" />
+          </el-select>
+          <el-badge is-dot :type="linkState">
+            <el-button  type="primary" @click="onLinkClick">连接</el-button>
+          </el-badge>
+
+          <el-select class="ml-20" placeholder="请选择数据表" v-model="selectDataTable" clearable @change="onSelectTableChange">
+            <el-option v-for="(item, index) in tableNameData" :key="index" :value="item.table_name" :label="item.table_name" />
+          </el-select>
+        </div>
+        <div>
+          <el-button type="primary" @click="onAddOneCellClick"
           >新增一行</el-button
         >
-        <el-button type="primary" @click="onSaveClick">保存</el-button>
+        <el-button type="primary" @click="onSaveClick">保存</el-button> 
+        </div>
       </div>
 
       <div class="h-[calc(100% - 60px)]">
@@ -76,7 +90,8 @@ import {
   GetModelInfo,
   SaveModelInfo,
 } from "../../../wailsjs/go/main/DataModel";
-import { model } from "../../../wailsjs/go/models";
+import { List as getDataSourceList, LinkDataSource, GetTableList, GetColumns } from "../../../wailsjs/go/main/DataSource";
+import { model, main } from "../../../wailsjs/go/models";
 import { Ref } from "vue";
 import { ElMessage } from "element-plus";
 import { VxeTableEvents } from "vxe-table/types/all";
@@ -84,6 +99,10 @@ import { VxeTableEvents } from "vxe-table/types/all";
 
 // 数据
 const tableRef = ref();
+
+const selectDataSource = ref();
+const selectDataTable = ref();
+const linkState = ref('danger');
 
 const router = useRouter();
 const route = useRoute();
@@ -132,6 +151,7 @@ const extensionRender = reactive({
 
 const id = ref(route.query["id"]);
 const mdTitle = ref(route.query["title"]);
+const makeType = ref(route.query['makeType'] as string);
 
 const validRules = ref({
   title: [{ required: true, message: "标题不能为空" }],
@@ -142,6 +162,8 @@ const validRules = ref({
 onMounted(() => {});
 
 const tableData: Ref<model.ModelInfo[]> = ref([]);
+const dsData: Ref<model.DataSource[]> = ref([]);
+const tableNameData : Ref<main.TablelInfo[]> = ref([]);
 
 const getData = async () => {
   const data = await GetModelInfo(id.value as string);
@@ -149,9 +171,52 @@ const getData = async () => {
   tableData.value = data;
 };
 
+const onLinkClick = () => {
+  linkDataSource();
+}
+
+const linkDataSource = async () => {
+  if (selectDataSource.value) {
+    const res = await LinkDataSource(selectDataSource.value);
+    console.log('res', res);
+    if (res == null) {
+      linkState.value = 'success';
+      const list = await GetTableList(selectDataSource.value);
+      console.log('tableNameData', list);
+      tableNameData.value = list;
+    }
+  }
+};
+
+const getDsData = async () => {
+  const data = await getDataSourceList("", 0, 0);
+  dsData.value = data;
+}
+
 onMounted(() => {
   getData();
+  getDsData();
 });
+
+const onSelectTableChange = async () => {
+  if (selectDataTable.value) {
+    const list = await GetColumns(selectDataSource.value, selectDataTable.value);
+    if (list) {
+      tableData.value = [];
+      list.forEach(e => {
+        tableData.value.push(
+          model.ModelInfo.createFrom({
+            title: e.name,
+            name: e.name,
+            columnType: e.type,
+            size: e.size,
+            extension: ['isShow'],
+          })
+        )
+      })
+    }
+  }
+}
 
 const onBackClick = () => {
   router.push("/");

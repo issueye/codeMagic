@@ -24,6 +24,7 @@ func (owner *DataSource) Create(data *repository.CreateDataSource) error {
 		UserName: data.UserName,
 		Password: data.Password,
 		DbType:   data.DbType,
+		Database: data.Database,
 		Schema:   data.Schema,
 		Path:     data.Path,
 	})
@@ -40,6 +41,7 @@ func (owner *DataSource) Modify(data *repository.UpdateDataSource) error {
 	updateMap["username"] = data.UserName
 	updateMap["password"] = data.Password
 	updateMap["db_type"] = data.DbType
+	updateMap["database"] = data.Database
 	updateMap["schema"] = data.Schema
 	updateMap["path"] = data.Path
 

@@ -14,15 +14,20 @@ import (
 // 初始化其他数据
 func InitData() {
 	path := filepath.Join("runtime", "data", "data.db")
-	commonService.DB = db.InitSqlite(path, global.Logger)
+	var err error
+	commonService.DB, err = db.InitSqlite(path, global.Logger)
+	if err != nil {
+		panic(fmt.Sprintf("数据库初始化失败 %s", err.Error()))
+	}
 
 	// 初始化表
-	err := commonService.DB.AutoMigrate(
+	err = commonService.DB.AutoMigrate(
 		&model.UserInfo{},      // 用户
 		&model.UserGroupInfo{}, // 用户组
 		&model.DataModel{},     // 数据模型
 		&model.ModelInfo{},     // 模型信息
 		&model.CodeTemplate{},  // 代码模板
+		&model.DataSource{},    // 数据源
 	)
 
 	if err != nil {
