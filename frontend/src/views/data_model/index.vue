@@ -12,71 +12,35 @@
             <el-option v-for="(item, index) in dsData" :key="index" :value="item.id" :label="item.title" />
           </el-select>
           <el-badge is-dot :type="linkState">
-            <el-button  type="primary" @click="onLinkClick">连接</el-button>
+            <el-button type="primary" @click="onLinkClick">连接</el-button>
           </el-badge>
 
-          <el-select class="ml-20" placeholder="请选择数据表" v-model="selectDataTable" clearable @change="onSelectTableChange">
-            <el-option v-for="(item, index) in tableNameData" :key="index" :value="item.table_name" :label="item.table_name" />
+          <el-select class="ml-20" placeholder="请选择数据表" v-model="selectDataTable" clearable
+            @change="onSelectTableChange">
+            <el-option v-for="(item, index) in tableNameData" :key="index" :value="item.table_name"
+              :label="item.table_name" />
           </el-select>
         </div>
         <div>
-          <el-button type="primary" @click="onAddOneCellClick"
-          >新增一行</el-button
-        >
-        <el-button type="primary" @click="onSaveClick">保存</el-button> 
+          <el-button type="primary" @click="onAddOneCellClick">新增一行</el-button>
+          <el-button type="primary" @click="onSaveClick">保存</el-button>
         </div>
       </div>
 
       <div class="h-[calc(100% - 60px)]">
-        <vxe-table
-          border
-          show-overflow
-          keep-source
-          size="mini"
-          ref="tableRef"
-          :data="tableData"
-          :menu-config="menuConfig"
-          :edit-rules="validRules"
-          max-height="550"
-          empty-text="没有数据"
-          :edit-config="{ trigger: 'click', mode: 'row', showStatus: true }"
-          @menu-click="onCtxMenuClickEvent"
-        >
+        <vxe-table border show-overflow keep-source size="mini" ref="tableRef" :data="tableData"
+          :menu-config="menuConfig" :edit-rules="validRules" max-height="550" empty-text="没有数据"
+          :edit-config="{ trigger: 'click', mode: 'row', showStatus: true }" @menu-click="onCtxMenuClickEvent">
           <vxe-column type="seq" title="序号" width="70" />
-          <vxe-column
-            field="title"
-            title="标题"
-            :edit-render="{ name: 'ElInput' }"
-          />
-          <vxe-column
-            field="name"
-            title="名称"
-            :edit-render="{ name: 'ElInput' }"
-          />
-          <vxe-column
-            field="columnType"
-            title="数据类型"
-            :edit-render="columnTypeRender"
-            width="180"
-          />
-          <vxe-column
-            field="size"
-            title="长度"
-            width="100"
-            :edit-render="{ name: 'ElInputNumber', props: { controlsPosition: 'right' }}"
-          />
-          <vxe-column
-            field="isPk"
-            title="主键"
-            width="80"
-            :cell-render="{ name: 'ElSwitch',props: { activeValue: 1, inactiveValue: 0 } }"
-          />
-          <vxe-column
-            field="extension"
-            title="拓展"
-            width="190"
-            :edit-render="extensionRender"
-          />
+          <vxe-column field="title" title="标题" :edit-render="{ name: 'ElInput' }" />
+          <vxe-column field="name" title="名称" :edit-render="{ name: 'ElInput' }" />
+          <vxe-column field="mark" title="备注" :edit-render="{ name: 'ElInput' }" />
+          <vxe-column field="columnType" title="数据类型" :edit-render="columnTypeRender" width="180" />
+          <vxe-column field="size" title="长度" width="100"
+            :edit-render="{ name: 'ElInputNumber', props: { controlsPosition: 'right' } }" />
+          <vxe-column field="isPk" title="主键" width="80"
+            :cell-render="{ name: 'ElSwitch', props: { activeValue: 1, inactiveValue: 0 } }" />
+          <vxe-column field="extension" title="拓展" width="190" :edit-render="extensionRender" />
         </vxe-table>
       </div>
     </template>
@@ -159,11 +123,11 @@ const validRules = ref({
   columnType: [{ required: true, message: "数据类型不能为空" }],
 });
 
-onMounted(() => {});
+onMounted(() => { });
 
 const tableData: Ref<model.ModelInfo[]> = ref([]);
 const dsData: Ref<model.DataSource[]> = ref([]);
-const tableNameData : Ref<main.TablelInfo[]> = ref([]);
+const tableNameData: Ref<main.TablelInfo[]> = ref([]);
 
 const getData = async () => {
   const data = await GetModelInfo(id.value as string);

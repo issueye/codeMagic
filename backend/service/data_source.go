@@ -38,7 +38,7 @@ func (owner *DataSource) Modify(data *repository.UpdateDataSource) error {
 	updateMap["title"] = data.Title
 	updateMap["host"] = data.Host
 	updateMap["port"] = data.Port
-	updateMap["username"] = data.UserName
+	updateMap["user_name"] = data.UserName
 	updateMap["password"] = data.Password
 	updateMap["db_type"] = data.DbType
 	updateMap["database"] = data.Database

@@ -7,33 +7,33 @@
   <BsMain>
     <template #body>
       <el-form inline>
-        <el-form-item label="检索">
-          <el-input v-model="form.condition" placeholder="请输入检索内容" clearable @change="onChange" />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onQryClick">查询</el-button>
-        </el-form-item>
-      </el-form>
+          <el-form-item label="检索">
+            <el-input v-model="form.condition" placeholder="请输入检索内容" clearable @change="onChange" />
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="onQryClick">查询</el-button>
+          </el-form-item>
+        </el-form>
 
-      <div class="h-[calc(100% - 60px)]">
-        <el-table border :data="tableData" size="small" highlight-current-row stripe>
-          <el-table-column prop="id" label="编码" width="150" show-overflow-tooltip />
-          <el-table-column prop="title" label="标题" width="200" show-overflow-tooltip />
-          <el-table-column prop="db_type" label="数据类型" width="130" show-overflow-tooltip />
-          <el-table-column prop="mark" label="备注" show-overflow-tooltip />
-          <el-table-column label="操作" width="160" align="center" fixed="right">
-            <template v-slot="{ row }">
-              <el-button type="primary" link size="small" @click="onEditClick(row)">编辑</el-button>
-              <el-button type="danger" link size="small" @click="onDeleteClick(row)">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-      <div style="margin-top: 10px">
-        <el-pagination small background :current-page="pageNum" :page-size="pageSize" :page-sizes="[5, 10, 20]"
-          :total="total" layout="total, sizes, prev, pager, next" @size-change="onSizeChange"
-          @current-change="onCurrentChange" />
-      </div>
+        <div class="h-[calc(100% - 60px)]">
+          <el-table border :data="tableData" size="small" highlight-current-row stripe>
+            <el-table-column prop="id" label="编码" width="150" show-overflow-tooltip />
+            <el-table-column prop="title" label="标题" width="200" show-overflow-tooltip />
+            <el-table-column prop="db_type" label="数据类型" width="130" show-overflow-tooltip />
+            <el-table-column prop="mark" label="备注" show-overflow-tooltip />
+            <el-table-column label="操作" width="160" align="center" fixed="right">
+              <template v-slot="{ row }">
+                <el-button type="primary" link size="small" @click="onEditClick(row)">编辑</el-button>
+                <el-button type="danger" link size="small" @click="onDeleteClick(row)">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <div style="margin-top: 10px">
+          <el-pagination small background :current-page="pageNum" :page-size="pageSize" :page-sizes="[5, 10, 20]"
+            :total="total" layout="total, sizes, prev, pager, next" @size-change="onSizeChange"
+            @current-change="onCurrentChange" />
+        </div>
     </template>
   </BsMain>
 
@@ -44,7 +44,8 @@
           <el-input v-model="dataForm.title" placeholder="请输入数据模型标题" clearable />
         </el-form-item>
         <el-form-item label="数据库类型" prop="db_type">
-          <el-select v-model="dataForm.db_type" placeholder="请选择数据库类型" clearable @change="onDBTypeChange" :disabled="operationType == 1">
+          <el-select v-model="dataForm.db_type" placeholder="请选择数据库类型" clearable @change="onDBTypeChange"
+            :disabled="operationType == 1">
             <el-option value="sqlserver" label="sqlserver" />
             <el-option value="mysql" label="mysql" />
             <el-option value="postgresql" label="postgresql" />
@@ -236,7 +237,7 @@ const onSave = () => {
   if (!dataFormRef.value) return;
   dataFormRef.value.validate(async (valid: boolean) => {
     if (valid) {
-      console.log('dataForm',  dataForm);
+      console.log('dataForm', dataForm);
 
       switch (operationType.value) {
         case 0: {

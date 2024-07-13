@@ -86,6 +86,7 @@ export namespace model {
 	    title: string;
 	    makeType: number;
 	    tableName: string;
+	    project: string;
 	    tpIds: string[];
 	    mark: string;
 	
@@ -101,6 +102,7 @@ export namespace model {
 	        this.title = source["title"];
 	        this.makeType = source["makeType"];
 	        this.tableName = source["tableName"];
+	        this.project = source["project"];
 	        this.tpIds = source["tpIds"];
 	        this.mark = source["mark"];
 	    }
@@ -272,6 +274,7 @@ export namespace repository {
 	    title: string;
 	    makeType: number;
 	    tableName: string;
+	    project: string;
 	    tpIds: string[];
 	    mark: string;
 	
@@ -284,6 +287,7 @@ export namespace repository {
 	        this.title = source["title"];
 	        this.makeType = source["makeType"];
 	        this.tableName = source["tableName"];
+	        this.project = source["project"];
 	        this.tpIds = source["tpIds"];
 	        this.mark = source["mark"];
 	    }
@@ -369,6 +373,7 @@ export namespace repository {
 	    title: string;
 	    makeType: number;
 	    tableName: string;
+	    project: string;
 	    tpIds: string[];
 	    mark: string;
 	
@@ -384,6 +389,7 @@ export namespace repository {
 	        this.title = source["title"];
 	        this.makeType = source["makeType"];
 	        this.tableName = source["tableName"];
+	        this.project = source["project"];
 	        this.tpIds = source["tpIds"];
 	        this.mark = source["mark"];
 	    }

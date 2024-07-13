@@ -1,8 +1,5 @@
 <template>
-  <BsHeader
-    :title="mdTitle"
-    description="数据模型提供基础结构，通过绑定对应的代码模板生成代码"
-  >
+  <BsHeader :title="mdTitle" description="数据模型提供基础结构，通过绑定对应的代码模板生成代码">
     <template #actions>
       <el-button @click="onBackClick">返回</el-button>
     </template>
@@ -10,18 +7,10 @@
   <BsMain>
     <template #body>
       <el-tabs v-model="activeName" @tab-click="onTabClick">
-        <el-tab-pane
-          v-for="(item, index) in tableData"
-          :label="item.title"
-          :key="index"
-          :name="item.id"
-        >
+        <el-tab-pane v-for="(item, index) in tableData" :label="item.title" :key="index" :name="item.id">
         </el-tab-pane>
       </el-tabs>
-      <div
-        class="h-full border border-solid border-[#d9d9d9]"
-            style="height: calc(100% - 60px)"
-      >
+      <div class="h-full border border-solid border-[#d9d9d9]" style="height: calc(100% - 60px)">
         <Codemirror v-model:value="logData" :options="cmOptions" />
       </div>
     </template>
@@ -31,11 +20,10 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, reactive, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import Codemirror, { createLog } from "codemirror-editor-vue3";
+import Codemirror from "codemirror-editor-vue3";
 
 import { List } from "../../../wailsjs/go/main/Template";
 import { Ref } from "vue";
-import { ElMessage } from "element-plus";
 import type { TabsPaneContext } from 'element-plus';
 import { EventsOn, EventsOff } from "../../../wailsjs/runtime/runtime";
 import { repository, model } from "../../../wailsjs/go/models";
