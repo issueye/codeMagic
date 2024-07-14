@@ -7,14 +7,27 @@
   <BsMain :usePadding="false" :diffHeight="42">
     <template #body>
       <div class="w-full h-full flex">
-        <div class="flex w-[300px] h-full" style="border-right: 1px solid #d9d9d9;">
-          <el-tree :data="treeData" class="w-full p-[5px]" :expand-on-click-node="false">
+        <div
+          class="flex w-[300px] h-full"
+          style="border-right: 1px solid #d9d9d9"
+        >
+          <el-tree
+            :data="treeData"
+            class="w-full p-[5px]"
+            :expand-on-click-node="false"
+          >
             <template #default="{ node, data }">
               <div class="flex items-center justify-between w-full">
                 <span>{{ node.label }}</span>
                 <span>
                   <el-link type="primary" class="mr-[5px]">添加</el-link>
-                  <el-link type="danger" :disabled="['001', '002'].some((e: any) => data.id == e)">删除</el-link>
+                  <el-link
+                    type="primary"
+                    class="mr-[5px]"
+                    v-if="!showNode(data)"
+                    >编辑</el-link
+                  >
+                  <el-link type="danger" v-if="!showNode(data)">删除</el-link>
                 </span>
               </div>
             </template>
@@ -23,52 +36,133 @@
         <div class="flex flex-col w-[calc(100%-300px)] p-[10px]">
           <el-form inline>
             <el-form-item label="检索">
-              <el-input v-model="form.condition" placeholder="请输入检索内容" clearable @change="onChange" />
+              <el-input
+                v-model="form.condition"
+                placeholder="请输入检索内容"
+                clearable
+                @change="onChange"
+              />
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="onQryClick">查询</el-button>
             </el-form-item>
           </el-form>
           <div class="h-[calc(100% - 60px)]">
-            <el-table border :data="tableData" size="small" highlight-current-row stripe>
-              <el-table-column prop="id" label="编码" width="150" show-overflow-tooltip />
-              <el-table-column prop="title" label="标题" width="150" show-overflow-tooltip />
-              <el-table-column prop="fileName" label="文件名称" width="150" show-overflow-tooltip />
-              <el-table-column prop="fileType" label="目标文件类型" width="90" show-overflow-tooltip>
+            <el-table
+              border
+              :data="tableData"
+              size="small"
+              highlight-current-row
+              stripe
+            >
+              <el-table-column
+                prop="id"
+                label="编码"
+                width="150"
+                show-overflow-tooltip
+              />
+              <el-table-column
+                prop="title"
+                label="标题"
+                width="150"
+                show-overflow-tooltip
+              />
+              <el-table-column
+                prop="fileName"
+                label="文件名称"
+                width="150"
+                show-overflow-tooltip
+              />
+              <el-table-column
+                prop="fileType"
+                label="目标文件类型"
+                width="90"
+                show-overflow-tooltip
+              >
                 <template #default="{ row }">
                   <el-tag>{{ getTargetFileType(row.fileType) }}</el-tag>
                 </template>
               </el-table-column>
               <el-table-column prop="mark" label="备注" show-overflow-tooltip />
-              <el-table-column label="操作" width="190" align="center" fixed="right">
+              <el-table-column
+                label="操作"
+                width="190"
+                align="center"
+                fixed="right"
+              >
                 <template v-slot="{ row }">
-                  <el-button type="primary" link size="small" @click="onEditScriptClick(row)">编辑脚本</el-button>
-                  <el-button type="primary" link size="small" @click="onEditClick(row)">编辑</el-button>
-                  <el-button type="danger" link size="small" @click="onDeleteClick(row)">删除</el-button>
+                  <el-button
+                    type="primary"
+                    link
+                    size="small"
+                    @click="onEditScriptClick(row)"
+                    >编辑脚本</el-button
+                  >
+                  <el-button
+                    type="primary"
+                    link
+                    size="small"
+                    @click="onEditClick(row)"
+                    >编辑</el-button
+                  >
+                  <el-button
+                    type="danger"
+                    link
+                    size="small"
+                    @click="onDeleteClick(row)"
+                    >删除</el-button
+                  >
                 </template>
               </el-table-column>
             </el-table>
             <div style="margin-top: 10px">
-              <el-pagination small background :current-page="pageNum" :page-size="pageSize" :page-sizes="[5, 10, 20]"
-                :total="total" layout="total, sizes, prev, pager, next" @size-change="onSizeChange"
-                @current-change="onCurrentChange" />
+              <el-pagination
+                small
+                background
+                :current-page="pageNum"
+                :page-size="pageSize"
+                :page-sizes="[5, 10, 20]"
+                :total="total"
+                layout="total, sizes, prev, pager, next"
+                @size-change="onSizeChange"
+                @current-change="onCurrentChange"
+              />
             </div>
           </div>
         </div>
       </div>
-
-
     </template>
   </BsMain>
 
-  <BsDialog :title="title" :width="500" :visible="visible" @close="onClose" @save="onSave" @open="onOpen">
+  <BsDialog
+    :title="title"
+    :width="500"
+    :visible="visible"
+    @close="onClose"
+    @save="onSave"
+    @open="onOpen"
+  >
     <template #body>
-      <el-form label-width="auto" :model="dataForm" :rules="rules" ref="dataFormRef">
+      <el-form
+        label-width="auto"
+        :model="dataForm"
+        :rules="rules"
+        ref="dataFormRef"
+      >
         <el-form-item label="标题" prop="title">
-          <el-input v-model="dataForm.title" placeholder="请输入数据模型标题" clearable />
+          <el-input
+            v-model="dataForm.title"
+            placeholder="请输入数据模型标题"
+            clearable
+          />
         </el-form-item>
         <el-form-item label="文件名称" prop="fileName">
-          <el-input v-model="dataForm.fileName" placeholder="请输入文件名称" :disabled="true" clearable />
+          <el-input
+            v-model="dataForm.fileName"
+            placeholder="请输入文件名称"
+            :disabled="true"
+            clearable
+          />
         </el-form-item>
         <el-form-item label="文件类型" prop="fileType">
           <el-select v-model="dataForm.fileType" placeholder="请选择文件类型">
@@ -79,7 +173,13 @@
           </el-select>
         </el-form-item>
         <el-form-item label="备注">
-          <el-input v-model="dataForm.mark" placeholder="请输入备注" type="textarea" :row="2" clearable />
+          <el-input
+            v-model="dataForm.mark"
+            placeholder="请输入备注"
+            type="textarea"
+            :row="2"
+            clearable
+          />
         </el-form-item>
       </el-form>
     </template>
@@ -140,41 +240,47 @@ const dataForm = reactive<model.CodeTemplate>(
 );
 
 interface Tree {
-  label: string
-  id: string
-  children?: Tree[]
+  label: string;
+  id: string;
+  children?: Tree[];
 }
 
 const treeData: Ref<Tree[]> = ref([
   {
-    id: '001',
-    label: '公共文件夹(common)',
+    id: "001",
+    label: "公共文件夹(common)",
     children: [
       {
-        id: '',
-        label: 'common.ts',
-      }
-    ]
+        id: "",
+        label: "common.ts",
+      },
+    ],
   },
   {
-    id: '002',
-    label: '方案文件夹(scheme)',
+    id: "002",
+    label: "方案文件夹(scheme)",
     children: [
       {
-        id: '',
-        label: '方案1',
+        id: "",
+        label: "方案1",
         children: [
           {
-            id: '',
-            label: '方案1-1'
-          }
-        ]
-      }
-    ]
-  }
+            id: "",
+            label: "方案1-1",
+          },
+        ],
+      },
+    ],
+  },
 ]);
 
-onMounted(() => { });
+const showNode = (value: any) => {
+  console.log("value", value);
+
+  return ["001", "002"].some((item) => item === value.id);
+};
+
+onMounted(() => {});
 
 const tableData: Ref<model.CodeTemplate[]> = ref([]);
 
