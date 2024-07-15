@@ -152,7 +152,7 @@ const dataForm = reactive<model.DataModel>(
 
 onMounted(async () => {
   tpTableData.value = await TemplateList(
-    repository.RequestTemplateQuery.createFrom({ condition: "" }),
+    repository.QryTemplate.createFrom({ condition: "" }),
     0,
     0
   );

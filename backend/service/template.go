@@ -16,7 +16,7 @@ func (owner *Template) SetBase(base service.BaseService) {
 }
 
 // 创建数据
-func (owner *Template) Create(data *repository.RequestCreateTemplate) error {
+func (owner *Template) Create(data *repository.CreateTemplate) error {
 	info := model.NewCodeTemplate(&data.CodeTemplateBase)
 	return owner.GetDB().Model(&model.CodeTemplate{}).Create(info).Error
 }
@@ -35,11 +35,10 @@ func (owner *Template) Gets(ids []string) ([]*model.CodeTemplate, error) {
 }
 
 // 创建数据
-func (owner *Template) Modify(data *repository.RequestModifyTemplate) error {
+func (owner *Template) Modify(data *repository.ModifyTemplate) error {
 	updateMap := make(map[string]any)
 	updateMap["title"] = data.Title
 	updateMap["file_name"] = data.FileName
-	updateMap["file_type"] = data.FileType
 	updateMap["mark"] = data.Mark
 	return owner.GetDB().Model(&model.CodeTemplate{}).Where("ID = ?", data.ID).Updates(&updateMap).Error
 }
@@ -49,13 +48,27 @@ func (owner *Template) Delete(id string) error {
 	return owner.GetDB().Delete(&model.CodeTemplate{}, id).Error
 }
 
+// 创建数据
+func (owner *Template) DeleteBySchemeCode(code string) error {
+	return owner.GetDB().Where("scheme_code = ?", code).Delete(&model.CodeTemplate{}).Error
+}
+
+// 创建数据
+func (owner *Template) DeleteByParentSchemeCode(code string) error {
+	return owner.GetDB().Where("scheme_parent_code = ?", code).Delete(&model.CodeTemplate{}).Error
+}
+
 // 获取数据列表
-func (owner *Template) List(data *model.Page[repository.RequestTemplateQuery]) ([]*model.CodeTemplate, error) {
+func (owner *Template) List(data *model.Page[repository.QryTemplate]) ([]*model.CodeTemplate, error) {
 	list := make([]*model.CodeTemplate, 0)
 	err := service.Filter(owner, model.CodeTemplate{}.TableName(), data, &list, func(db *gorm.DB) (*gorm.DB, error) {
 
 		if data.Condition.Condition != "" {
 			db = db.Where("(title like ? file_name like ? file_type like ? or mark like ?)", "%"+data.Condition.Condition+"%", "%"+data.Condition.Condition+"%")
+		}
+
+		if data.Condition.ParentCode != "" {
+			db.Where("scheme_code = ?", data.Condition.ParentCode).Or("scheme_parent_code = ?", data.Condition.ParentCode)
 		}
 
 		if len(data.Condition.Ids) > 0 {

@@ -24,7 +24,15 @@ func (owner *Scheme) Create(data *repository.CreateScheme) error {
 // 通过ID 获取数据
 func (owner *Scheme) Get(id string) (*model.Scheme, error) {
 	info := &model.Scheme{}
-	return info, owner.GetDB().Model(&model.Scheme{}).Where("ID = ?", id).First(info).Error
+	err := owner.GetDB().Model(&model.Scheme{}).Where("ID = ?", id).Find(info).Error
+	return info, err
+}
+
+// 通过ID 获取数据
+func (owner *Scheme) GetByCode(code string) (*model.Scheme, error) {
+	info := &model.Scheme{}
+	err := owner.GetDB().Model(&model.Scheme{}).Where("code = ?", code).Find(info).Error
+	return info, err
 }
 
 // 通过ID 获取数据
@@ -38,12 +46,31 @@ func (owner *Scheme) Gets(ids []string) ([]*model.Scheme, error) {
 func (owner *Scheme) Modify(data *repository.ModifyScheme) error {
 	updateMap := make(map[string]any)
 	updateMap["title"] = data.Title
+	updateMap["icon"] = data.Icon
 	return owner.GetDB().Model(&model.Scheme{}).Where("ID = ?", data.ID).Updates(&updateMap).Error
+}
+
+// 创建数据
+func (owner *Scheme) ModifyByCode(data *repository.ModifyScheme) error {
+	updateMap := make(map[string]any)
+	updateMap["title"] = data.Title
+	updateMap["icon"] = data.Icon
+	return owner.GetDB().Model(&model.Scheme{}).Where("code = ?", data.Code).Updates(&updateMap).Error
 }
 
 // 创建数据
 func (owner *Scheme) Delete(id string) error {
 	return owner.GetDB().Delete(&model.Scheme{}, id).Error
+}
+
+// 创建数据
+func (owner *Scheme) DeleteByCode(code string) error {
+	return owner.GetDB().Where("code = ?", code).Delete(&model.Scheme{}).Error
+}
+
+// 创建数据
+func (owner *Scheme) DeleteByParentCode(code string) error {
+	return owner.GetDB().Where("parent_code = ?", code).Delete(&model.Scheme{}).Error
 }
 
 // 获取数据列表

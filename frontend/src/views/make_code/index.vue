@@ -55,7 +55,7 @@ const cmOptions = {
 const tableData: Ref<model.CodeTemplate[]> = ref([]);
 
 const getData = async () => {
-  let send = repository.RequestTemplateQuery.createFrom({
+  let send = repository.QryTemplate.createFrom({
     ids: tpIds.value,
   });
   const data = await List(send, 0, 0);

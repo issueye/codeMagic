@@ -112,7 +112,7 @@ func (lc *CodeLogic) RunCode(dmId string, isTest bool, tpCodeId string) error {
 
 func (lc *CodeLogic) runCode(core *code_engine.Core, tp *model.CodeTemplate) (err error) {
 
-	path := fmt.Sprintf("%s.js", tp.FileName)
+	path := tp.FileName
 	global.Log.Infof("开始执行代码 %s", path)
 
 	var fn MainFunc

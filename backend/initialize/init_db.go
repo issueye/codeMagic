@@ -7,6 +7,7 @@ import (
 	"github.com/issueye/code_magic/backend/common/model"
 	commonService "github.com/issueye/code_magic/backend/common/service"
 	"github.com/issueye/code_magic/backend/global"
+	"github.com/issueye/code_magic/backend/logic"
 	"github.com/issueye/code_magic/backend/pkg/db"
 	"github.com/issueye/code_magic/backend/service"
 )
@@ -28,6 +29,7 @@ func InitData() {
 		&model.ModelInfo{},     // 模型信息
 		&model.CodeTemplate{},  // 代码模板
 		&model.DataSource{},    // 数据源
+		&model.Scheme{},        // 代码模板方法
 	)
 
 	if err != nil {
@@ -44,4 +46,8 @@ func InitData() {
 	if err != nil {
 		panic("初始化数据失败 " + err.Error())
 	}
+
+	// 初始化
+	tpLc := &logic.Template{}
+	tpLc.InitScriptScheme()
 }

@@ -3,14 +3,20 @@
 import {repository} from '../models';
 import {model} from '../models';
 
-export function Create(arg1:repository.RequestCreateTemplate):Promise<void>;
+export function Create(arg1:repository.CreateTemplate):Promise<void>;
 
 export function Delete(arg1:string):Promise<void>;
 
+export function DeleteByCode(arg1:string):Promise<void>;
+
+export function DeleteTreeNode(arg1:string):Promise<void>;
+
 export function GetCode(arg1:string):Promise<string>;
 
-export function List(arg1:repository.RequestTemplateQuery,arg2:number,arg3:number):Promise<Array<model.CodeTemplate>>;
+export function GetTree():Promise<Array<repository.SchemeTree>>;
 
-export function Modify(arg1:repository.RequestModifyTemplate):Promise<void>;
+export function List(arg1:repository.QryTemplate,arg2:number,arg3:number):Promise<Array<model.CodeTemplate>>;
+
+export function Modify(arg1:repository.ModifyTemplate):Promise<void>;
 
 export function SaveCode(arg1:string,arg2:string):Promise<void>;

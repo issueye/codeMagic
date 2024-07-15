@@ -41,8 +41,11 @@ export namespace model {
 	    updatedAt: any;
 	    title: string;
 	    fileName: string;
-	    fileType: number;
+	    schemeCode: string;
+	    schemeParentCode: string;
 	    mark: string;
+	    nodeType: number;
+	    icon: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new CodeTemplate(source);
@@ -55,8 +58,11 @@ export namespace model {
 	        this.updatedAt = this.convertValues(source["updatedAt"], null);
 	        this.title = source["title"];
 	        this.fileName = source["fileName"];
-	        this.fileType = source["fileType"];
+	        this.schemeCode = source["schemeCode"];
+	        this.schemeParentCode = source["schemeParentCode"];
 	        this.mark = source["mark"];
+	        this.nodeType = source["nodeType"];
+	        this.icon = source["icon"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -270,6 +276,96 @@ export namespace repository {
 	        this.mark = source["mark"];
 	    }
 	}
+	export class CreateTemplate {
+	    title: string;
+	    fileName: string;
+	    schemeCode: string;
+	    schemeParentCode: string;
+	    mark: string;
+	    nodeType: number;
+	    icon: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new CreateTemplate(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.title = source["title"];
+	        this.fileName = source["fileName"];
+	        this.schemeCode = source["schemeCode"];
+	        this.schemeParentCode = source["schemeParentCode"];
+	        this.mark = source["mark"];
+	        this.nodeType = source["nodeType"];
+	        this.icon = source["icon"];
+	    }
+	}
+	export class ModifyTemplate {
+	    id: string;
+	    // Go type: time
+	    createdAt: any;
+	    // Go type: time
+	    updatedAt: any;
+	    title: string;
+	    fileName: string;
+	    schemeCode: string;
+	    schemeParentCode: string;
+	    mark: string;
+	    nodeType: number;
+	    icon: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new ModifyTemplate(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.id = source["id"];
+	        this.createdAt = this.convertValues(source["createdAt"], null);
+	        this.updatedAt = this.convertValues(source["updatedAt"], null);
+	        this.title = source["title"];
+	        this.fileName = source["fileName"];
+	        this.schemeCode = source["schemeCode"];
+	        this.schemeParentCode = source["schemeParentCode"];
+	        this.mark = source["mark"];
+	        this.nodeType = source["nodeType"];
+	        this.icon = source["icon"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class QryTemplate {
+	    condition: string;
+	    parentCode: string;
+	    ids: string[];
+	
+	    static createFrom(source: any = {}) {
+	        return new QryTemplate(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.condition = source["condition"];
+	        this.parentCode = source["parentCode"];
+	        this.ids = source["ids"];
+	    }
+	}
 	export class RequestCreateDataModel {
 	    title: string;
 	    makeType: number;
@@ -289,24 +385,6 @@ export namespace repository {
 	        this.tableName = source["tableName"];
 	        this.project = source["project"];
 	        this.tpIds = source["tpIds"];
-	        this.mark = source["mark"];
-	    }
-	}
-	export class RequestCreateTemplate {
-	    title: string;
-	    fileName: string;
-	    fileType: number;
-	    mark: string;
-	
-	    static createFrom(source: any = {}) {
-	        return new RequestCreateTemplate(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.title = source["title"];
-	        this.fileName = source["fileName"];
-	        this.fileType = source["fileType"];
 	        this.mark = source["mark"];
 	    }
 	}
@@ -412,30 +490,26 @@ export namespace repository {
 		    return a;
 		}
 	}
-	export class RequestModifyTemplate {
+	export class SchemeTree {
 	    id: string;
-	    // Go type: time
-	    createdAt: any;
-	    // Go type: time
-	    updatedAt: any;
 	    title: string;
-	    fileName: string;
-	    fileType: number;
-	    mark: string;
+	    icon: string;
+	    type: number;
+	    parentCode: string;
+	    children: SchemeTree[];
 	
 	    static createFrom(source: any = {}) {
-	        return new RequestModifyTemplate(source);
+	        return new SchemeTree(source);
 	    }
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.id = source["id"];
-	        this.createdAt = this.convertValues(source["createdAt"], null);
-	        this.updatedAt = this.convertValues(source["updatedAt"], null);
 	        this.title = source["title"];
-	        this.fileName = source["fileName"];
-	        this.fileType = source["fileType"];
-	        this.mark = source["mark"];
+	        this.icon = source["icon"];
+	        this.type = source["type"];
+	        this.parentCode = source["parentCode"];
+	        this.children = this.convertValues(source["children"], SchemeTree);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -455,20 +529,6 @@ export namespace repository {
 		    }
 		    return a;
 		}
-	}
-	export class RequestTemplateQuery {
-	    condition: string;
-	    ids: string[];
-	
-	    static createFrom(source: any = {}) {
-	        return new RequestTemplateQuery(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.condition = source["condition"];
-	        this.ids = source["ids"];
-	    }
 	}
 	export class UpdateDataSource {
 	    id: string;

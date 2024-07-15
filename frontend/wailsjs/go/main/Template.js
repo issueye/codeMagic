@@ -10,8 +10,20 @@ export function Delete(arg1) {
   return window['go']['main']['Template']['Delete'](arg1);
 }
 
+export function DeleteByCode(arg1) {
+  return window['go']['main']['Template']['DeleteByCode'](arg1);
+}
+
+export function DeleteTreeNode(arg1) {
+  return window['go']['main']['Template']['DeleteTreeNode'](arg1);
+}
+
 export function GetCode(arg1) {
   return window['go']['main']['Template']['GetCode'](arg1);
+}
+
+export function GetTree() {
+  return window['go']['main']['Template']['GetTree']();
 }
 
 export function List(arg1, arg2, arg3) {

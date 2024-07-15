@@ -27,12 +27,17 @@ func GetTemplate() *Template {
 }
 
 // 创建数据模型
-func (app *Template) Create(data *repository.RequestCreateTemplate) error {
-	srv := commonService.NewService(&service.Template{})
-	return srv.Create(data)
+func (app *Template) Create(data *repository.CreateTemplate) error {
+	tplc := new(logic.Template)
+	return tplc.CreateNode(&repository.CreateChildScheme{
+		Title:      data.Title,
+		ParentCode: data.SchemeCode,
+		NodeType:   data.NodeType,
+		Icon:       data.Icon,
+	})
 }
 
-func (app *Template) List(condition repository.RequestTemplateQuery, page, size int) ([]*model.CodeTemplate, error) {
+func (app *Template) List(condition repository.QryTemplate, page, size int) ([]*model.CodeTemplate, error) {
 	srv := commonService.NewService(&service.Template{})
 	qry := model.NewPage(condition)
 	qry.PageNum = int64(page)
@@ -51,12 +56,25 @@ func (app *Template) SaveCode(id string, code string) error {
 
 // 创建数据模型
 func (app *Template) Delete(id string) error {
-	srv := commonService.NewService(&service.Template{})
-	return srv.Delete(id)
+	return new(logic.Template).DeleteNode(id)
 }
 
 // 创建数据模型
-func (app *Template) Modify(data *repository.RequestModifyTemplate) error {
-	srv := commonService.NewService(&service.Template{})
-	return srv.Modify(data)
+func (app *Template) DeleteByCode(code string) error {
+	return new(logic.Template).DeleteNode(code)
+}
+
+// 创建数据模型
+func (app *Template) Modify(data *repository.ModifyTemplate) error {
+	tplc := new(logic.Template)
+	return tplc.ModifyNode(data)
+}
+
+func (app *Template) DeleteTreeNode(code string) error {
+	return new(logic.Template).DeleteTreeNode(code)
+}
+
+// 创建数据模型
+func (app *Template) GetTree() (trees []*repository.SchemeTree, err error) {
+	return new(logic.Template).GetTree()
 }
