@@ -33,6 +33,7 @@ func (app *Template) Create(data *repository.CreateTemplate) error {
 		Title:      data.Title,
 		ParentCode: data.SchemeCode,
 		NodeType:   data.NodeType,
+		FileType:   data.FileType,
 		Icon:       data.Icon,
 	})
 }

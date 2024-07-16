@@ -25,6 +25,7 @@ type CodeTemplateBase struct {
 	SchemeParentCode string `binding:"required" label:"父模板代码" gorm:"column:scheme_parent_code;type:text;comment:父模板代码;" json:"schemeParentCode"` // 父模板代码
 	Mark             string `binding:"required" label:"备注" gorm:"column:mark;size:300;comment:备注;" json:"mark"`                                  // 备注
 	NodeType         int    `binding:"required" label:"节点类型" gorm:"-" json:"nodeType"`                                                           // 节点类型
+	FileType         int    `binding:"required" label:"文件类型" gorm:"-" json:"fileType"`                                                           // 文件类型 0 js 1 ts
 	Icon             string `binding:"required" label:"图标" gorm:"-" json:"icon"`                                                                 // 图标
 }
 

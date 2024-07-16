@@ -267,6 +267,23 @@ func (t *Template) CreateNode(data *repository.CreateChildScheme) (err error) {
 		global.Log.Errorf("获取父节点信息失败: %s", err.Error())
 		return
 	}
+
+	var path string
+	if data.NodeType == 2 {
+		// 文件类型
+		switch data.FileType {
+		case 1:
+			path = filepath.Join(parent.Path, data.Title) + ".js"
+		case 2:
+			path = filepath.Join(parent.Path, data.Title) + ".ts"
+		}
+	}
+
+	if data.NodeType == 1 {
+		// 文件夹类型
+		path = filepath.Join(parent.Path, data.Title)
+	}
+
 	code := strconv.FormatInt(utils.GenID(), 5)
 	level := parent.Level + 1
 	info := &repository.CreateScheme{
@@ -277,7 +294,7 @@ func (t *Template) CreateNode(data *repository.CreateChildScheme) (err error) {
 			Level:      level,
 			NodeType:   data.NodeType,
 			ParentCode: data.ParentCode,
-			Path:       filepath.Join(parent.Path, data.Title),
+			Path:       path,
 		}),
 	}
 	err = srv.Create(info)
@@ -288,7 +305,7 @@ func (t *Template) CreateNode(data *repository.CreateChildScheme) (err error) {
 		err = tpSrv.Create(&repository.CreateTemplate{
 			CodeTemplateBase: model.CodeTemplateBase{
 				Title:            data.Title,
-				FileName:         filepath.Join(parent.Path, data.Title),
+				FileName:         path,
 				SchemeCode:       code,
 				SchemeParentCode: parent.Code,
 			},

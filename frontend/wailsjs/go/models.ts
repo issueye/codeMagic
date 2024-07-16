@@ -45,6 +45,7 @@ export namespace model {
 	    schemeParentCode: string;
 	    mark: string;
 	    nodeType: number;
+	    fileType: number;
 	    icon: string;
 	
 	    static createFrom(source: any = {}) {
@@ -62,6 +63,7 @@ export namespace model {
 	        this.schemeParentCode = source["schemeParentCode"];
 	        this.mark = source["mark"];
 	        this.nodeType = source["nodeType"];
+	        this.fileType = source["fileType"];
 	        this.icon = source["icon"];
 	    }
 	
@@ -283,6 +285,7 @@ export namespace repository {
 	    schemeParentCode: string;
 	    mark: string;
 	    nodeType: number;
+	    fileType: number;
 	    icon: string;
 	
 	    static createFrom(source: any = {}) {
@@ -297,6 +300,7 @@ export namespace repository {
 	        this.schemeParentCode = source["schemeParentCode"];
 	        this.mark = source["mark"];
 	        this.nodeType = source["nodeType"];
+	        this.fileType = source["fileType"];
 	        this.icon = source["icon"];
 	    }
 	}
@@ -312,6 +316,7 @@ export namespace repository {
 	    schemeParentCode: string;
 	    mark: string;
 	    nodeType: number;
+	    fileType: number;
 	    icon: string;
 	
 	    static createFrom(source: any = {}) {
@@ -329,6 +334,7 @@ export namespace repository {
 	        this.schemeParentCode = source["schemeParentCode"];
 	        this.mark = source["mark"];
 	        this.nodeType = source["nodeType"];
+	        this.fileType = source["fileType"];
 	        this.icon = source["icon"];
 	    }
 	
