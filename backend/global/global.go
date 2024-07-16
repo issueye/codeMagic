@@ -5,6 +5,7 @@ import (
 
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
+	"github.com/issueye/code_magic/backend/code_engine"
 	"go.uber.org/zap"
 	"gopkg.in/antage/eventsource.v1"
 	"gorm.io/gorm"
@@ -18,4 +19,5 @@ var (
 	HttpServer *http.Server
 	Auth       *jwt.GinJWTMiddleware
 	SSE        eventsource.EventSource
+	JsVMCore   *code_engine.Core
 )

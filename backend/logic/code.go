@@ -3,7 +3,6 @@ package logic
 import (
 	"context"
 	"fmt"
-	"path/filepath"
 
 	"github.com/issueye/code_magic/backend/code_engine"
 	"github.com/issueye/code_magic/backend/common/model"
@@ -57,19 +56,17 @@ func (lc *CodeLogic) RunCode(dmId string, isTest bool, tpCodeId string) error {
 
 	// 将信息注入到虚拟机中
 	runtime.EventsEmit(lc.ctx, CONSOLE_EVENT, fmt.Sprintf("开始注入模板[%s]信息", dmId))
-	logPath := filepath.Join("runtime", "logs")
-	core := code_engine.NewCore(code_engine.OptionLog(logPath, global.Logger.Named("code_engine")))
-	globalPath := filepath.Join("runtime", "static", "code")
-	core.SetGlobalPath(globalPath)
-	core.SetProperty("dm", "title", info.Title)
-	core.SetProperty("dm", "tableName", info.TBName)
-	core.SetProperty("dm", "columns", columns)
-	core.ConsoleCallBack = func(args ...any) {
+
+	vm := global.JsVMCore.GetRuntime()
+	vm.SetProperty("dm", "title", info.Title)
+	vm.SetProperty("dm", "tableName", info.TBName)
+	vm.SetProperty("dm", "columns", columns)
+	vm.ConsoleCallBack = func(args ...any) {
 		// 去除第一个参数，第一个参数是日志级别
 		runtime.EventsEmit(lc.ctx, CONSOLE_EVENT, args[1])
 	}
 
-	core.InitPool()
+	// core.InitPool()
 
 	// 获取代码模板的脚本
 	tpSrv := commonService.NewService(&service.Template{})
@@ -83,7 +80,7 @@ func (lc *CodeLogic) RunCode(dmId string, isTest bool, tpCodeId string) error {
 		errArr := make([]error, 0)
 		for _, tp := range tps {
 
-			err = lc.runCode(core, tp)
+			err = lc.runCode(vm, tp)
 			if err != nil {
 				errArr = append(errArr, err)
 			}
@@ -101,7 +98,7 @@ func (lc *CodeLogic) RunCode(dmId string, isTest bool, tpCodeId string) error {
 			return err
 		}
 
-		err = lc.runCode(core, tp)
+		err = lc.runCode(vm, tp)
 		if err != nil {
 			return err
 		}
@@ -110,7 +107,7 @@ func (lc *CodeLogic) RunCode(dmId string, isTest bool, tpCodeId string) error {
 	return nil
 }
 
-func (lc *CodeLogic) runCode(core *code_engine.Core, tp *model.CodeTemplate) (err error) {
+func (lc *CodeLogic) runCode(vm *code_engine.JsVM, tp *model.CodeTemplate) (err error) {
 
 	path := tp.FileName
 	global.Log.Infof("开始执行代码 %s", path)
@@ -118,7 +115,7 @@ func (lc *CodeLogic) runCode(core *code_engine.Core, tp *model.CodeTemplate) (er
 	var fn MainFunc
 	runtime.EventsEmit(lc.ctx, CONSOLE_EVENT, "开始导出[main]函数")
 
-	err = core.ExportFunc("main", path, &fn)
+	err = vm.ExportFunc("main", path, &fn)
 	if err != nil {
 		global.Log.Errorf("导出[main]函数失败 %s", err)
 		runtime.EventsEmit(lc.ctx, CONSOLE_EVENT, fmt.Sprintf("导出[main]函数失败 %s", err))

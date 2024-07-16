@@ -5,17 +5,17 @@ import (
 	"path/filepath"
 
 	"github.com/dop251/goja_nodejs/require"
-	"github.com/sohaha/zlsgo/zfile"
 )
 
-func (vm *JsVM) sourceLoader(dir string) func(string) ([]byte, error) {
+func (vm *JsVM) sourceLoader(_ string) func(string) ([]byte, error) {
 	return func(filename string) ([]byte, error) {
+		// fmt.Println("sourceLoader -> filename", filename)
 		data, err := os.ReadFile(filename)
 		if err != nil {
-			fullPath := zfile.RealPath(dir, true) + filename
-			for _, v := range []string{fullPath, fullPath + ".ts"} {
+			for _, v := range []string{filename, filename + ".ts"} {
 				data, err = os.ReadFile(v)
 				if err == nil {
+					// fmt.Println("v", v)
 					break
 				}
 			}
@@ -24,7 +24,6 @@ func (vm *JsVM) sourceLoader(dir string) func(string) ([]byte, error) {
 		if err != nil {
 			return nil, require.ModuleFileDoesNotExistError
 		}
-
 		ext := filepath.Ext(filename)
 		if ext == ".ts" || ext == "" {
 			data, err = vm.Transpile(data)

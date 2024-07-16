@@ -17,7 +17,9 @@ func Initialize() {
 	InitLog()
 	// 数据
 	InitData()
-	// 关闭日志
+	// 初始化js虚拟机
+	InitJSVM()
+
 	global.Logger.Sync()
 	// 关闭监听
 	ctx.Done()

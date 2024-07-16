@@ -25,6 +25,7 @@ func (vm *JsVM) TranspileFile(file string) ([]byte, error) {
 
 func (vm *JsVM) Transpile(code []byte) ([]byte, error) {
 	compiler := `{"strict":false,"target":"ES5","module":"CommonJS"}`
+
 	s := `ts.transpileModule(atob("` + zstring.Base64EncodeString(zstring.Bytes2String(code)) + `"), {
 		"compilerOptions": ` + compiler + `,
 		})`
