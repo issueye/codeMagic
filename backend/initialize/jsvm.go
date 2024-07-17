@@ -11,7 +11,6 @@ func InitJSVM() {
 	logPath := filepath.Join("runtime", "logs")
 	global.JsVMCore = code_engine.NewCore(
 		code_engine.OptionLog(logPath, global.Logger.Named("code_engine")),
-		code_engine.OptionUseTS(),
 	)
 
 	globalPath := filepath.Join("runtime", "static", "code")

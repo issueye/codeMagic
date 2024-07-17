@@ -13,7 +13,11 @@ export function DeleteTreeNode(arg1:string):Promise<void>;
 
 export function GetCode(arg1:string):Promise<string>;
 
+export function GetTpByCode(arg1:string):Promise<model.CodeTemplate>;
+
 export function GetTree():Promise<Array<repository.SchemeTree>>;
+
+export function GetTreeByCode(arg1:string):Promise<Array<repository.SchemeTree>>;
 
 export function List(arg1:repository.QryTemplate,arg2:number,arg3:number):Promise<Array<model.CodeTemplate>>;
 

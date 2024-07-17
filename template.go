@@ -79,3 +79,13 @@ func (app *Template) DeleteTreeNode(code string) error {
 func (app *Template) GetTree() (trees []*repository.SchemeTree, err error) {
 	return new(logic.Template).GetTree()
 }
+
+// 创建数据模型
+func (app *Template) GetTreeByCode(code string) (trees []*repository.SchemeTree, err error) {
+	return new(logic.Template).GetTreeByCode(code)
+}
+
+// 创建数据模型
+func (app *Template) GetTpByCode(code string) (data *model.CodeTemplate, err error) {
+	return new(logic.Template).GetTpByCode(code)
+}

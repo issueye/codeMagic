@@ -32,8 +32,6 @@ type Core struct {
 	logMode LogOutMode
 	// 输出回调
 	ConsoleCallBack ConsoleCallBack
-	// 使用 ts
-	useTS bool
 }
 
 type OptFunc = func(*Core)
@@ -60,30 +58,14 @@ func NewCore(opts ...OptFunc) *Core {
 }
 
 func (c *Core) InitPool() {
-	if c.useTS {
-		pro, err := c.CompileTS()
-
-		if err == nil {
-			c.pool = sync.Pool{
-				New: func() interface{} {
-					jsVM := NewJsVM(
-						c.globalPath,
-						c.logger,
-						pro,
-						c.ConsoleCallBack,
-					)
-
-					return jsVM
-				},
-			}
-		}
-	} else {
+	pro, err := c.CompileTS()
+	if err == nil {
 		c.pool = sync.Pool{
 			New: func() interface{} {
 				jsVM := NewJsVM(
 					c.globalPath,
 					c.logger,
-					nil,
+					pro,
 					c.ConsoleCallBack,
 				)
 
@@ -99,14 +81,6 @@ func OptionLog(path string, log *zap.Logger) OptFunc {
 	return func(core *Core) {
 		core.logger = log
 		core.logPath = path
-	}
-}
-
-// OptionLog
-// 配置日志
-func OptionUseTS() OptFunc {
-	return func(core *Core) {
-		core.useTS = true
 	}
 }
 

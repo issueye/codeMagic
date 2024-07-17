@@ -19,6 +19,7 @@ type SchemeBase struct {
 	ParentCode string `binding:"required" label:"父编码" gorm:"column:parent_code;size:100;comment:父编码;" json:"parentCode"` // 父编码
 	Icon       string `binding:"required" label:"图标" gorm:"column:icon;size:500;comment:图标;" json:"icon"`                // 图标  flat-color-icons:folder  flat-color-icons:file vscode-icons:default-root-folder-opened
 	NodeType   int    `binding:"required" label:"节点类型" gorm:"column:node_type;size:10;comment:节点类型;" json:"nodeType"`    // 节点类型 0 根节点 1 文件夹节点 2 文件节点
+	Nodes      Arr    `binding:"required" label:"所属节点" gorm:"column:nodes;size:300;comment:所属节点;" json:"nodes"`          // 所属节点
 	Path       string `binding:"required" label:"路径" gorm:"column:path;size:500;comment:路径;" json:"path"`                // 路径
 }
 

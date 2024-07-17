@@ -28,6 +28,12 @@ func (owner *Template) Get(id string) (*model.CodeTemplate, error) {
 }
 
 // 通过ID 获取数据
+func (owner *Template) GetBySchemeCode(code string) (*model.CodeTemplate, error) {
+	info := &model.CodeTemplate{}
+	return info, owner.GetDB().Model(&model.CodeTemplate{}).Where("scheme_code = ?", code).First(info).Error
+}
+
+// 通过ID 获取数据
 func (owner *Template) Gets(ids []string) ([]*model.CodeTemplate, error) {
 	info := make([]*model.CodeTemplate, 0)
 	err := owner.GetDB().Model(&model.CodeTemplate{}).Where("ID in (?)", ids).Find(&info).Error

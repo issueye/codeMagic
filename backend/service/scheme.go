@@ -91,3 +91,21 @@ func (owner *Scheme) List(data *model.Page[repository.QryScheme]) ([]*model.Sche
 
 	return list, err
 }
+
+// 获取指定节点的子节点
+func (owner *Scheme) GetNodeByCode(code []string, parentCode string) (list []*model.Scheme, err error) {
+	list = make([]*model.Scheme, 0)
+
+	sql := `SELECT 1 as num,* FROM scheme WHERE nodes || ',' LIKE '%001,%' UNION SELECT 2 as num,* FROM scheme WHERE code in (?) or parent_code = ?;`
+	err = owner.GetDB().Raw(sql, code, parentCode).Scan(&list).Error
+	return
+}
+
+// 获取指定节点的子节点
+func (owner *Scheme) GetCommonNode() (list []*model.Scheme, err error) {
+	list = make([]*model.Scheme, 0)
+
+	sql := `SELECT * FROM scheme WHERE nodes || ',' LIKE '%001,%';`
+	err = owner.GetDB().Raw(sql).Scan(&list).Error
+	return
+}

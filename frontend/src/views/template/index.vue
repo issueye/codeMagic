@@ -148,17 +148,6 @@ onMounted(() => {
 });
 
 // 事件
-
-/**
- * 添加事件
- */
-// const onAddClick = () => {
-//   operationType.value = 0;
-//   title.value = `[添加]${nameTitle}`;
-//   resetForm();
-//   visible.value = true;
-// };
-
 const onChange = () => {
   getData();
 };
@@ -167,18 +156,12 @@ const onQryClick = () => {
   getData();
 };
 
-// const onEditClick = (value: any) => {
-//   operationType.value = 1;
-//   title.value = `[编辑]${nameTitle}`;
-//   setForm(value);
-//   visible.value = true;
-// };
-
 const onEditScriptClick = (value: any) => {
-  console.log("value", value);
+  // console.log("value", value);
+  console.log('value.schemeCode', value.schemeCode);
   router.push({
     path: "/script_edit",
-    query: { id: value.id, title: value.title },
+    query: { id: value.id, title: value.title, schemeCode: value.schemeCode },
   });
 };
 

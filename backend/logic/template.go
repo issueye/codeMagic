@@ -58,6 +58,52 @@ func (t *Template) GetTree() (trees []*repository.SchemeTree, err error) {
 
 	schemeSrv := commonService.NewService(&service.Scheme{})
 	schemes, err := schemeSrv.List(model.NewPage(repository.QryScheme{}))
+	if err != nil {
+		return nil, err
+	}
+
+	// 先创建根节点
+	for _, scheme := range schemes {
+		if scheme.Level == 0 {
+			tree := t.createNode(scheme)
+			children := t.findChildren(scheme.Code, schemes)
+
+			if len(children) > 0 {
+				tree.Children = t.createNodes(children, schemes)
+			}
+
+			trees = append(trees, tree)
+		}
+	}
+
+	return
+}
+
+func (t *Template) GetTpByCode(code string) (*model.CodeTemplate, error) {
+	srv := commonService.NewService(&service.Template{})
+	return srv.GetBySchemeCode(code)
+}
+
+func (t *Template) GetTreeByCode(code string) (trees []*repository.SchemeTree, err error) {
+	trees = make([]*repository.SchemeTree, 0)
+	// 获取当前节点信息
+	schemeSrv := commonService.NewService(&service.Scheme{})
+	scheme, err := schemeSrv.GetByCode(code)
+	if err != nil {
+		return nil, err
+	}
+
+	var schemes []*model.Scheme
+
+	if scheme.Nodes[0] == "001" {
+		schemes, err = schemeSrv.GetCommonNode()
+	} else {
+		schemes, err = schemeSrv.GetNodeByCode(scheme.Nodes, scheme.ParentCode)
+	}
+
+	if err != nil {
+		return nil, err
+	}
 
 	// 先创建根节点
 	for _, scheme := range schemes {
@@ -160,10 +206,20 @@ func (t *Template) CheckOrCreate(code string, title string, path string) {
 		return
 	}
 
-	if info == nil {
+	create := func() {
 		scheme := &repository.CreateScheme{
-			Scheme: *model.NewScheme(&model.SchemeBase{Code: code, Title: title, Icon: "vscode-icons:default-root-folder-opened", Level: 0, NodeType: 0, ParentCode: "", Path: path}),
+			Scheme: *model.NewScheme(&model.SchemeBase{
+				Code:       code,
+				Title:      title,
+				Icon:       "vscode-icons:default-root-folder-opened",
+				Level:      0,
+				NodeType:   0,
+				ParentCode: "",
+				Path:       path,
+			}),
 		}
+
+		scheme.Nodes = append(scheme.Nodes, code)
 		err = srv.Create(scheme)
 		if err != nil {
 			global.Log.Errorf("初始化脚本模板方案失败: %s", err.Error())
@@ -171,15 +227,12 @@ func (t *Template) CheckOrCreate(code string, title string, path string) {
 		}
 	}
 
+	if info == nil {
+		create()
+	}
+
 	if info != nil && info.Code == "" {
-		scheme := &repository.CreateScheme{
-			Scheme: *model.NewScheme(&model.SchemeBase{Code: code, Title: title, Icon: "vscode-icons:default-root-folder-opened", Level: 0, NodeType: 0, ParentCode: "", Path: path}),
-		}
-		err = srv.Create(scheme)
-		if err != nil {
-			global.Log.Errorf("初始化脚本模板方案失败: %s", err.Error())
-			return
-		}
+		create()
 	}
 }
 
@@ -226,7 +279,7 @@ func (t *Template) DeleteNode(code string) (err error) {
 	}
 
 	// 删除对应的文件夹
-	err = os.RemoveAll(info.Path)
+	err = os.RemoveAll(filepath.Join("runtime", "static", "code", info.Path))
 	return
 }
 
@@ -297,6 +350,10 @@ func (t *Template) CreateNode(data *repository.CreateChildScheme) (err error) {
 			Path:       path,
 		}),
 	}
+
+	parent.Nodes = append(parent.Nodes, code)
+	info.Nodes = parent.Nodes
+
 	err = srv.Create(info)
 
 	// 如果创建的是文件，则需要创建对应的代码模板
@@ -311,6 +368,8 @@ func (t *Template) CreateNode(data *repository.CreateChildScheme) (err error) {
 			},
 		})
 	}
+
+	info.Nodes = append(info.Nodes, data.ParentCode)
 
 	// 创建文件夹
 	if data.NodeType == 1 {

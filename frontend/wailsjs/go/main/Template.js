@@ -22,8 +22,16 @@ export function GetCode(arg1) {
   return window['go']['main']['Template']['GetCode'](arg1);
 }
 
+export function GetTpByCode(arg1) {
+  return window['go']['main']['Template']['GetTpByCode'](arg1);
+}
+
 export function GetTree() {
   return window['go']['main']['Template']['GetTree']();
+}
+
+export function GetTreeByCode(arg1) {
+  return window['go']['main']['Template']['GetTreeByCode'](arg1);
 }
 
 export function List(arg1, arg2, arg3) {
