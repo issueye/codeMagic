@@ -11,7 +11,7 @@ type DataMode struct {
 }
 
 // 创建数据模型
-func (lc *DataMode) CreateDataModel(data *repository.RequestCreateDataModel) error {
+func (lc *DataMode) CreateDataModel(data *repository.CreateDataModel) error {
 	srv := commonService.NewService(&service.DataModel{})
 	return srv.Create(data)
 }

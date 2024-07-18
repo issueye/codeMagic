@@ -28,6 +28,20 @@ func (owner *Scheme) Get(id string) (*model.Scheme, error) {
 	return info, err
 }
 
+// ProgrammeList
+func (owner *Scheme) ProgrammeList() ([]*model.Scheme, error) {
+	info := make([]*model.Scheme, 0)
+	err := owner.GetDB().Model(&model.Scheme{}).Where("level = ? and parent_code = ?", 1, "002").Find(&info).Error
+	return info, err
+}
+
+// 通过ID 获取数据
+func (owner *Scheme) GetChildrenByCode(code string) (list []*model.Scheme, err error) {
+	list = make([]*model.Scheme, 0)
+	err = owner.GetDB().Model(&model.Scheme{}).Where("parent_code = ?", code).Find(&list).Error
+	return list, err
+}
+
 // 通过ID 获取数据
 func (owner *Scheme) GetByCode(code string) (*model.Scheme, error) {
 	info := &model.Scheme{}

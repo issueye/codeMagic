@@ -8,73 +8,183 @@
     <template #body>
       <div class="p-3">
         <el-form inline>
-        <el-form-item label="检索">
-          <el-input v-model="form.condition" placeholder="请输入检索内容" clearable @change="onChange" />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onQryClick">查询</el-button>
-        </el-form-item>
-      </el-form>
+          <el-form-item label="检索">
+            <el-input
+              v-model="form.condition"
+              placeholder="请输入检索内容"
+              clearable
+              @change="onChange"
+            />
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="onQryClick">查询</el-button>
+          </el-form-item>
+        </el-form>
 
-      <div class="h-[calc(100% - 60px)]">
-        <el-table border :data="tableData" size="small" highlight-current-row stripe>
-          <el-table-column prop="id" label="编码" width="150" show-overflow-tooltip />
-          <el-table-column prop="title" label="标题" width="150" show-overflow-tooltip />
-          <el-table-column prop="project" label="项目名称" width="200" show-overflow-tooltip />
-          <el-table-column prop="tableName" label="表名" width="150" show-overflow-tooltip />
-          <el-table-column prop="makeType" label="生成类型" width="90" show-overflow-tooltip>
-            <template v-slot="{ row }">
-              <el-tag effect="plain" :type="row.makeType === 1 ? 'success' : 'danger'">
-                {{ row.makeType === 1 ? "数据源" : "手动生成" }}
-              </el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column prop="tpIds" label="脚本模板" min-width="200" show-overflow-tooltip>
-            <template v-slot="{ row }">
-              <el-tag class="mr-1" v-for="item in row.tpIds" :key="item" effect="plain">{{ getTPName(item) }}</el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column prop="mark" label="备注" show-overflow-tooltip />
-          <el-table-column label="操作" width="180" align="center" fixed="right">
-            <template v-slot="{ row }">
-              <!-- <el-button type="primary" link size="small" @click="onMakeCodeClick(row)">生成代码</el-button>
-              <el-button type="primary" link size="small" @click="onEditDataModelClick(row)">编辑模型</el-button> -->
-              <el-button type="primary" link size="small" @click="onEditClick(row)">编辑</el-button>
-              <el-button type="danger" link size="small" @click="onDeleteClick(row)">删除</el-button>
-              <el-dropdown @command="handleCommand" class="p-[2px] h-[24px] flex items-center ml-[12px]">
-                <span class="flex items-center text-[12px] text-[--el-color-primary] hover:text-[--el-color-primary-light-3] outline-none currsor-pointer">更多 <el-icon class="el-icon--right"><arrow-down /></el-icon></span>
-                <template #dropdown>
-                  <el-dropdown-menu>
-                    <el-dropdown-item :command="{ data: row, type: 'edit_model' }">编辑模型</el-dropdown-item> 
-                    <el-dropdown-item :command="{ data: row, type: 'make_code' }">生成代码</el-dropdown-item>
-                    <el-dropdown-item :command="{ data: row, type: 'variable' }">设置变量</el-dropdown-item>
-                  </el-dropdown-menu>
-                </template>
-              </el-dropdown>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-      <div style="margin-top: 10px">
-        <el-pagination small background :current-page="pageNum" :page-size="pageSize" :page-sizes="[5, 10, 20]"
-          :total="total" layout="total, sizes, prev, pager, next" @size-change="onSizeChange"
-          @current-change="onCurrentChange" />
-      </div>
+        <div class="h-[calc(100% - 60px)]">
+          <el-table
+            border
+            :data="tableData"
+            size="small"
+            highlight-current-row
+            stripe
+          >
+            <el-table-column
+              prop="id"
+              label="编码"
+              width="150"
+              show-overflow-tooltip
+            />
+            <el-table-column
+              prop="title"
+              label="标题"
+              width="150"
+              show-overflow-tooltip
+            />
+            <el-table-column
+              prop="project"
+              label="项目名称"
+              width="200"
+              show-overflow-tooltip
+            />
+            <el-table-column
+              prop="tableName"
+              label="表名"
+              width="150"
+              show-overflow-tooltip
+            />
+            <el-table-column
+              prop="makeType"
+              label="生成类型"
+              width="90"
+              show-overflow-tooltip
+            >
+              <template v-slot="{ row }">
+                <el-tag
+                  effect="plain"
+                  :type="row.makeType === 1 ? 'success' : 'danger'"
+                >
+                  {{ row.makeType === 1 ? "数据源" : "手动生成" }}
+                </el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="schemeId"
+              label="脚本方案"
+              min-width="200"
+              show-overflow-tooltip
+            >
+              <template v-slot="{ row }">
+                <el-tag class="mr-1" effect="plain">{{
+                  getTPName(row.schemeId)
+                }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column prop="mark" label="备注" show-overflow-tooltip />
+            <el-table-column
+              label="操作"
+              width="150"
+              align="center"
+              fixed="right"
+            >
+              <template v-slot="{ row }">
+                <div class="flex items-center">
+                  <el-button
+                    type="primary"
+                    link
+                    size="small"
+                    @click="onEditClick(row)"
+                    >编辑</el-button
+                  >
+                  <el-button
+                    type="danger"
+                    link
+                    size="small"
+                    @click="onDeleteClick(row)"
+                    >删除</el-button
+                  >
+                  <el-dropdown
+                    @command="handleCommand"
+                    class="h-[16px] flex items-center ml-[12px]"
+                  >
+                    <span
+                      class="flex items-center text-[12px] text-[--el-color-primary] hover:text-[--el-color-primary-light-3] outline-none currsor-pointer"
+                      >更多
+                      <el-icon class="el-icon--right"><arrow-down /></el-icon
+                    ></span>
+                    <template #dropdown>
+                      <el-dropdown-menu>
+                        <el-dropdown-item
+                          :command="{ data: row, type: 'edit_model' }"
+                          >编辑模型</el-dropdown-item
+                        >
+                        <el-dropdown-item
+                          :command="{ data: row, type: 'make_code' }"
+                          >生成代码</el-dropdown-item
+                        >
+                        <el-dropdown-item
+                          :command="{ data: row, type: 'variable' }"
+                          >设置变量</el-dropdown-item
+                        >
+                      </el-dropdown-menu>
+                    </template>
+                  </el-dropdown>
+                </div>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <div style="margin-top: 10px">
+          <el-pagination
+            small
+            background
+            :current-page="pageNum"
+            :page-size="pageSize"
+            :page-sizes="[5, 10, 20]"
+            :total="total"
+            layout="total, sizes, prev, pager, next"
+            @size-change="onSizeChange"
+            @current-change="onCurrentChange"
+          />
+        </div>
       </div>
     </template>
   </BsMain>
 
-  <BsDialog :title="title" :width="500" :visible="visible" @close="onClose" @save="onSave">
+  <BsDialog
+    :title="title"
+    :width="500"
+    :visible="visible"
+    @close="onClose"
+    @save="onSave"
+  >
     <template #body>
-      <el-form label-width="auto" :model="dataForm" :rules="rules" ref="dataFormRef">
+      <el-form
+        label-width="auto"
+        :model="dataForm"
+        :rules="rules"
+        ref="dataFormRef"
+      >
         <el-form-item label="标题" prop="title">
-          <el-input v-model="dataForm.title" placeholder="请输入数据模型标题" clearable />
+          <el-input
+            v-model="dataForm.title"
+            placeholder="请输入数据模型标题"
+            clearable
+          />
         </el-form-item>
         <el-form-item label="项目" prop="project">
-          <el-input v-model="dataForm.project" placeholder="请输入项目" clearable />
+          <el-input
+            v-model="dataForm.project"
+            placeholder="请输入项目"
+            clearable
+          />
         </el-form-item>
         <el-form-item label="表名" prop="tableName">
-          <el-input v-model="dataForm.tableName" placeholder="请输入表名" clearable />
+          <el-input
+            v-model="dataForm.tableName"
+            placeholder="请输入表名"
+            clearable
+          />
         </el-form-item>
         <el-form-item label="生成类型" prop="makeType">
           <el-select v-model="dataForm.makeType" placeholder="请选择生成类型">
@@ -82,13 +192,24 @@
             <el-option :value="1" label="数据源" />
           </el-select>
         </el-form-item>
-        <el-form-item label="脚本模板" prop="tpIds">
-          <el-select v-model="dataForm.tpIds" placeholder="请选择脚本模板" multiple collapse-tags>
-            <el-option v-for="(item, index) in tpTableData" :key="index" :value="item.id" :label="item.title" />
+        <el-form-item label="脚本方案">
+          <el-select v-model="dataForm.schemeId" placeholder="请选择脚本方案">
+            <el-option
+              v-for="(item, index) in programmeTableData"
+              :key="index"
+              :value="item.code"
+              :label="item.title"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="备注">
-          <el-input v-model="dataForm.mark" placeholder="请输入备注" type="textarea" :row="2" clearable />
+          <el-input
+            v-model="dataForm.mark"
+            placeholder="请输入备注"
+            type="textarea"
+            :row="2"
+            clearable
+          />
         </el-form-item>
       </el-form>
     </template>
@@ -104,7 +225,10 @@ import {
   Delete,
   Modify,
 } from "../../../wailsjs/go/main/DataModel";
-import { List as TemplateList } from "../../../wailsjs/go/main/Template";
+import {
+  List as TemplateList,
+  ProgrammeList,
+} from "../../../wailsjs/go/main/Template";
 import { model, repository } from "../../../wailsjs/go/models";
 import { Ref } from "vue";
 import { useRouter } from "vue-router";
@@ -146,20 +270,17 @@ const dataForm = reactive<model.DataModel>(
     title: "",
     project: "",
     makeType: 0,
+    schemeId: "",
     mark: "",
   })
 );
 
 onMounted(async () => {
-  tpTableData.value = await TemplateList(
-    repository.QryTemplate.createFrom({ condition: "" }),
-    0,
-    0
-  );
+  programmeTableData.value = await ProgrammeList();
 });
 
 const tableData: Ref<model.DataModel[]> = ref([]);
-const tpTableData: Ref<model.CodeTemplate[]> = ref([]);
+const programmeTableData: Ref<model.Scheme[]> = ref([]);
 
 const getData = async () => {
   const data = await List(form.condition, pageNum.value, pageSize.value);
@@ -173,7 +294,7 @@ const resetForm = () => {
   dataForm.makeType = 0;
   dataForm.tableName = "";
   dataForm.project = "";
-  dataForm.tpIds = [];
+  dataForm.schemeId = "";
   dataForm.mark = "";
 };
 
@@ -184,33 +305,38 @@ interface CommandInfo {
 
 const handleCommand = (value: CommandInfo) => {
   switch (value.type) {
-    case "edit_model":
-      {
-        router.push({
-          path: "/data_model",
-          query: { id: value.data.id, title: value.data.title, makeType: value.data.makeType },
-        });
-        break;
-      }
-      case "make_code":
-        {
-          router.push({
-            path: "/make_code",
-            query: { id: value.data.id, title: value.data.title, tpIds: value.data.tpIds },
-          });
-          break;
-        }
+    case "edit_model": {
+      router.push({
+        path: "/data_model",
+        query: {
+          id: value.data.id,
+          title: value.data.title,
+          makeType: value.data.makeType,
+        },
+      });
+      break;
+    }
+    case "make_code": {
+      router.push({
+        path: "/make_code",
+        query: {
+          id: value.data.id,
+          title: value.data.title,
+          schemeId: value.data.schemeId,
+        },
+      });
+      break;
+    }
   }
-  
-}
+};
 
 // 赋值表单数据
-const setForm = (value: any) => {
+const setForm = (value: model.DataModel) => {
   dataForm.id = value.id;
   dataForm.title = value.title;
   dataForm.tableName = value.tableName;
   dataForm.makeType = value.makeType;
-  dataForm.tpIds = value.tpIds;
+  dataForm.schemeId = value.schemeId;
   dataForm.mark = value.mark;
 };
 
@@ -240,7 +366,12 @@ const onQryClick = () => {
 
 // 获取脚本模板名称
 const getTPName = (value: string): string => {
-  return tpTableData.value.find((item: any) => item.id == value)?.title || "";
+  return (
+    programmeTableData.value.find((item: model.Scheme) => {
+      console.log("find->", item, item.code, value);
+      return item.code == value;
+    })?.title || ""
+  );
 };
 
 const onEditClick = (value: any) => {
@@ -273,14 +404,16 @@ const onSave = () => {
     if (valid) {
       switch (operationType.value) {
         case 0: {
-          await Create(dataForm);
+          let send = repository.CreateDataModel.createFrom(dataForm);
+          await Create(send);
           ElMessage.success("创建成功");
           visible.value = false;
           getData();
           break;
         }
         case 1: {
-          await Modify(dataForm);
+          let send = repository.RequestModifyDataModel.createFrom(dataForm);
+          await Modify(send);
           ElMessage.success("修改成功");
           visible.value = false;
           getData();

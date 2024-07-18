@@ -3,7 +3,7 @@
 import {repository} from '../models';
 import {model} from '../models';
 
-export function Create(arg1:repository.RequestCreateDataModel):Promise<void>;
+export function Create(arg1:repository.CreateDataModel):Promise<void>;
 
 export function Delete(arg1:string):Promise<void>;
 

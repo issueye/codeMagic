@@ -72,7 +72,7 @@ func (lc *CodeLogic) RunCode(dmId string, isTest bool, tpCodeId string) error {
 	tpSrv := commonService.NewService(&service.Template{})
 
 	if !isTest {
-		tps, err := tpSrv.Gets(info.TPIds)
+		tps, err := tpSrv.GetChildrenByCode(info.SchemeId)
 		if err != nil {
 			return err
 		}

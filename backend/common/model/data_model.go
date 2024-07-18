@@ -22,12 +22,12 @@ func NewDataModel(dmBase *DataModelBase) *DataModel {
 }
 
 type DataModelBase struct {
-	Title    string `binding:"required" label:"名称" gorm:"column:title;size:300;comment:标题;" json:"title"`          // 标题
-	MakeType int    `binding:"required" label:"类型" gorm:"column:make_type;type:int;comment:类型;" json:"makeType"`   // 类型
-	TBName   string `binding:"required" label:"表名" gorm:"column:table_name;size:300;comment:表名;" json:"tableName"` // 表名
-	Project  string `binding:"required" label:"项目" gorm:"column:project;size:300;comment:项目;" json:"project"`      // 项目
-	TPIds    Arr    `binding:"required" label:"模板ID" gorm:"column:tp_ids;type:text;comment:模板ID;" json:"tpIds"`    // 模板ID
-	Mark     string `binding:"required" label:"备注" gorm:"column:mark;size:300;comment:备注;" json:"mark"`            // 备注
+	Title    string `binding:"required" label:"名称" gorm:"column:title;size:300;comment:标题;" json:"title"`            // 标题
+	MakeType int    `binding:"required" label:"类型" gorm:"column:make_type;type:int;comment:类型;" json:"makeType"`     // 类型
+	TBName   string `binding:"required" label:"表名" gorm:"column:table_name;size:300;comment:表名;" json:"tableName"`   // 表名
+	Project  string `binding:"required" label:"项目" gorm:"column:project;size:300;comment:项目;" json:"project"`        // 项目
+	SchemeId string `binding:"required" label:"方案ID" gorm:"column:scheme_id;size:300;comment:方案ID;" json:"schemeId"` // 方案ID
+	Mark     string `binding:"required" label:"备注" gorm:"column:mark;size:300;comment:备注;" json:"mark"`              // 备注
 }
 
 // TableName

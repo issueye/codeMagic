@@ -1,8 +1,6 @@
 package service
 
 import (
-	"strings"
-
 	"github.com/issueye/code_magic/backend/common/model"
 	"github.com/issueye/code_magic/backend/common/service"
 	"github.com/issueye/code_magic/backend/repository"
@@ -18,12 +16,12 @@ func (owner *DataModel) SetBase(base service.BaseService) {
 }
 
 // 创建数据
-func (owner *DataModel) Create(data *repository.RequestCreateDataModel) error {
+func (owner *DataModel) Create(data *repository.CreateDataModel) error {
 	info := model.NewDataModel(&model.DataModelBase{
 		Title:    data.Title,
 		MakeType: data.MakeType,
 		TBName:   data.TBName,
-		TPIds:    data.TPIds,
+		SchemeId: data.SchemeId,
 		Mark:     data.Mark,
 	})
 
@@ -36,7 +34,7 @@ func (owner *DataModel) Modify(data *repository.RequestModifyDataModel) error {
 	updateMap["title"] = data.Title
 	updateMap["make_type"] = data.MakeType
 	updateMap["table_name"] = data.TBName
-	updateMap["tp_ids"] = strings.Join(data.TPIds, ",")
+	updateMap["scheme_id"] = data.SchemeId
 	updateMap["mark"] = data.Mark
 	return owner.GetDB().Model(&model.DataModel{}).Where("ID = ?", data.ID).Updates(&updateMap).Error
 }

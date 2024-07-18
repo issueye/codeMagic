@@ -18,6 +18,10 @@ export function DeleteTreeNode(arg1) {
   return window['go']['main']['Template']['DeleteTreeNode'](arg1);
 }
 
+export function GetChildrenByCode(arg1) {
+  return window['go']['main']['Template']['GetChildrenByCode'](arg1);
+}
+
 export function GetCode(arg1) {
   return window['go']['main']['Template']['GetCode'](arg1);
 }
@@ -40,6 +44,10 @@ export function List(arg1, arg2, arg3) {
 
 export function Modify(arg1) {
   return window['go']['main']['Template']['Modify'](arg1);
+}
+
+export function ProgrammeList() {
+  return window['go']['main']['Template']['ProgrammeList']();
 }
 
 export function SaveCode(arg1, arg2) {

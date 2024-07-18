@@ -95,7 +95,7 @@ export namespace model {
 	    makeType: number;
 	    tableName: string;
 	    project: string;
-	    tpIds: string[];
+	    schemeId: string;
 	    mark: string;
 	
 	    static createFrom(source: any = {}) {
@@ -111,7 +111,7 @@ export namespace model {
 	        this.makeType = source["makeType"];
 	        this.tableName = source["tableName"];
 	        this.project = source["project"];
-	        this.tpIds = source["tpIds"];
+	        this.schemeId = source["schemeId"];
 	        this.mark = source["mark"];
 	    }
 	
@@ -243,11 +243,87 @@ export namespace model {
 		    return a;
 		}
 	}
+	export class Scheme {
+	    id: string;
+	    // Go type: time
+	    createdAt: any;
+	    // Go type: time
+	    updatedAt: any;
+	    code: string;
+	    title: string;
+	    name: string;
+	    level: number;
+	    parentCode: string;
+	    icon: string;
+	    nodeType: number;
+	    nodes: string[];
+	    path: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new Scheme(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.id = source["id"];
+	        this.createdAt = this.convertValues(source["createdAt"], null);
+	        this.updatedAt = this.convertValues(source["updatedAt"], null);
+	        this.code = source["code"];
+	        this.title = source["title"];
+	        this.name = source["name"];
+	        this.level = source["level"];
+	        this.parentCode = source["parentCode"];
+	        this.icon = source["icon"];
+	        this.nodeType = source["nodeType"];
+	        this.nodes = source["nodes"];
+	        this.path = source["path"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
 
 }
 
 export namespace repository {
 	
+	export class CreateDataModel {
+	    title: string;
+	    makeType: number;
+	    tableName: string;
+	    project: string;
+	    schemeId: string;
+	    mark: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new CreateDataModel(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.title = source["title"];
+	        this.makeType = source["makeType"];
+	        this.tableName = source["tableName"];
+	        this.project = source["project"];
+	        this.schemeId = source["schemeId"];
+	        this.mark = source["mark"];
+	    }
+	}
 	export class CreateDataSource {
 	    title: string;
 	    host: string;
@@ -372,28 +448,6 @@ export namespace repository {
 	        this.ids = source["ids"];
 	    }
 	}
-	export class RequestCreateDataModel {
-	    title: string;
-	    makeType: number;
-	    tableName: string;
-	    project: string;
-	    tpIds: string[];
-	    mark: string;
-	
-	    static createFrom(source: any = {}) {
-	        return new RequestCreateDataModel(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.title = source["title"];
-	        this.makeType = source["makeType"];
-	        this.tableName = source["tableName"];
-	        this.project = source["project"];
-	        this.tpIds = source["tpIds"];
-	        this.mark = source["mark"];
-	    }
-	}
 	export class RequestModelInfoSave {
 	    id: string;
 	    // Go type: time
@@ -458,7 +512,7 @@ export namespace repository {
 	    makeType: number;
 	    tableName: string;
 	    project: string;
-	    tpIds: string[];
+	    schemeId: string;
 	    mark: string;
 	
 	    static createFrom(source: any = {}) {
@@ -474,7 +528,7 @@ export namespace repository {
 	        this.makeType = source["makeType"];
 	        this.tableName = source["tableName"];
 	        this.project = source["project"];
-	        this.tpIds = source["tpIds"];
+	        this.schemeId = source["schemeId"];
 	        this.mark = source["mark"];
 	    }
 	

@@ -11,6 +11,8 @@ export function DeleteByCode(arg1:string):Promise<void>;
 
 export function DeleteTreeNode(arg1:string):Promise<void>;
 
+export function GetChildrenByCode(arg1:string):Promise<Array<model.CodeTemplate>>;
+
 export function GetCode(arg1:string):Promise<string>;
 
 export function GetTpByCode(arg1:string):Promise<model.CodeTemplate>;
@@ -22,5 +24,7 @@ export function GetTreeByCode(arg1:string):Promise<Array<repository.SchemeTree>>
 export function List(arg1:repository.QryTemplate,arg2:number,arg3:number):Promise<Array<model.CodeTemplate>>;
 
 export function Modify(arg1:repository.ModifyTemplate):Promise<void>;
+
+export function ProgrammeList():Promise<Array<model.Scheme>>;
 
 export function SaveCode(arg1:string,arg2:string):Promise<void>;

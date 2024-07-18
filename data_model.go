@@ -28,7 +28,7 @@ func GetDataModel() *DataModel {
 }
 
 // 创建数据模型
-func (lc *DataModel) Create(data *repository.RequestCreateDataModel) error {
+func (lc *DataModel) Create(data *repository.CreateDataModel) error {
 	srv := commonService.NewService(&service.DataModel{})
 	return srv.Create(data)
 }

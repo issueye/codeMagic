@@ -95,6 +95,10 @@ func (t *Template) GetTreeByCode(code string) (trees []*repository.SchemeTree, e
 
 	var schemes []*model.Scheme
 
+	if len(scheme.Nodes) == 0 {
+		return nil, nil
+	}
+
 	if scheme.Nodes[0] == "001" {
 		schemes, err = schemeSrv.GetCommonNode()
 	} else {
@@ -380,4 +384,18 @@ func (t *Template) CreateNode(data *repository.CreateChildScheme) (err error) {
 	}
 
 	return
+}
+
+// ProgrammeList
+// @Description: 方案列表
+// @return list
+// @return err
+func (lc *Template) ProgrammeList() (list []*model.Scheme, err error) {
+	srv := commonService.NewService(&service.Scheme{})
+	return srv.ProgrammeList()
+}
+
+func (lc *Template) GetChildrenByCode(code string) (list []*model.CodeTemplate, err error) {
+	srv := commonService.NewService(&service.Template{})
+	return srv.GetChildrenByCode(code)
 }

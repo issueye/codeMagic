@@ -65,27 +65,45 @@ func (app *Template) DeleteByCode(code string) error {
 	return new(logic.Template).DeleteNode(code)
 }
 
-// 创建数据模型
+// Modify
+// 修改代码模板信息
 func (app *Template) Modify(data *repository.ModifyTemplate) error {
 	tplc := new(logic.Template)
 	return tplc.ModifyNode(data)
 }
 
+// DeleteTreeNode
+// 删除树节点
 func (app *Template) DeleteTreeNode(code string) error {
 	return new(logic.Template).DeleteTreeNode(code)
 }
 
-// 创建数据模型
+// GetTree
+// 获取树
 func (app *Template) GetTree() (trees []*repository.SchemeTree, err error) {
 	return new(logic.Template).GetTree()
 }
 
-// 创建数据模型
+// GetTreeByCode
+// 通过编码获取树
 func (app *Template) GetTreeByCode(code string) (trees []*repository.SchemeTree, err error) {
 	return new(logic.Template).GetTreeByCode(code)
 }
 
-// 创建数据模型
+// GetTpByCode
+// 通过编码获取代码模板
 func (app *Template) GetTpByCode(code string) (data *model.CodeTemplate, err error) {
 	return new(logic.Template).GetTpByCode(code)
+}
+
+// ProgrammeList
+// 获取方案列表
+func (app *Template) ProgrammeList() (data []*model.Scheme, err error) {
+	data, err = new(logic.Template).ProgrammeList()
+	return
+}
+
+func (app *Template) GetChildrenByCode(code string) (list []*model.CodeTemplate, err error) {
+	list, err = new(logic.Template).GetChildrenByCode(code)
+	return
 }

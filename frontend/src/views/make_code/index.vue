@@ -1,5 +1,8 @@
 <template>
-  <BsHeader :title="mdTitle" description="数据模型提供基础结构，通过绑定对应的代码模板生成代码">
+  <BsHeader
+    :title="mdTitle"
+    description="数据模型提供基础结构，通过绑定对应的代码模板生成代码"
+  >
     <template #actions>
       <el-button @click="onBackClick">返回</el-button>
     </template>
@@ -7,10 +10,18 @@
   <BsMain>
     <template #body>
       <el-tabs v-model="activeName" @tab-click="onTabClick">
-        <el-tab-pane v-for="(item, index) in tableData" :label="item.title" :key="index" :name="item.id">
+        <el-tab-pane
+          v-for="(item, index) in tableData"
+          :label="item.title"
+          :key="index"
+          :name="item.id"
+        >
         </el-tab-pane>
       </el-tabs>
-      <div class="h-full border border-solid border-[#d9d9d9]" style="height: calc(100% - 60px)">
+      <div
+        class="h-full border border-solid border-[#d9d9d9]"
+        style="height: calc(100% - 60px)"
+      >
         <Codemirror v-model:value="logData" :options="cmOptions" />
       </div>
     </template>
@@ -22,11 +33,11 @@ import { onMounted, onUnmounted, reactive, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import Codemirror from "codemirror-editor-vue3";
 
-import { List } from "../../../wailsjs/go/main/Template";
+import { GetChildrenByCode } from "../../../wailsjs/go/main/Template";
 import { Ref } from "vue";
-import type { TabsPaneContext } from 'element-plus';
+import type { TabsPaneContext } from "element-plus";
 import { EventsOn, EventsOff } from "../../../wailsjs/runtime/runtime";
-import { repository, model } from "../../../wailsjs/go/models";
+import { model } from "../../../wailsjs/go/models";
 import { RunCode } from "../../../wailsjs/go/main/DataModel";
 // import { VxeColumnPropTypes, VxeTableEvents } from "vxe-table";
 
@@ -38,11 +49,11 @@ const activeName = ref();
 
 const id = ref(route.query["id"]);
 const mdTitle = ref(route.query["title"]);
-const tpIds = ref(route.query["tpIds"]);
+const schemeId = ref(route.query["schemeId"]);
 console.log("id", id.value);
-console.log("tpIds", tpIds.value);
+console.log("schemeId", schemeId.value);
 
-const logData = ref('');
+const logData = ref("");
 const logDataMap = reactive<Record<string, string>>({});
 
 const cmOptions = {
@@ -55,10 +66,7 @@ const cmOptions = {
 const tableData: Ref<model.CodeTemplate[]> = ref([]);
 
 const getData = async () => {
-  let send = repository.QryTemplate.createFrom({
-    ids: tpIds.value,
-  });
-  const data = await List(send, 0, 0);
+  const data = await GetChildrenByCode(schemeId.value as string);
   console.log("data", data);
   tableData.value = data;
 
@@ -82,9 +90,9 @@ onMounted(() => {
   // 监听代码输入
 
   EventsOn("code_push", (data: codePushData) => {
-    console.log('data', data);
+    console.log("data", data);
     logDataMap[data.id] = data.code_content;
-    console.log('logDataMap', logDataMap);
+    console.log("logDataMap", logDataMap);
 
     if (logData.value == "") {
       logData.value = logDataMap[activeName.value as string];
@@ -103,11 +111,10 @@ const onBackClick = () => {
 };
 
 const onTabClick = (tab: TabsPaneContext, event: Event) => {
-  console.log('value', tab, event);
+  console.log("value", tab, event);
   logData.value = logDataMap[tab.props.name as string];
-  console.log('logData.value', logData.value);
-}
-
+  console.log("logData.value", logData.value);
+};
 </script>
 
 

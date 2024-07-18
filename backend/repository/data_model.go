@@ -2,7 +2,7 @@ package repository
 
 import "github.com/issueye/code_magic/backend/common/model"
 
-type RequestCreateDataModel struct {
+type CreateDataModel struct {
 	model.DataModelBase
 }
 
