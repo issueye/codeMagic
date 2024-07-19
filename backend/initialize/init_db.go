@@ -30,6 +30,7 @@ func InitData() {
 		&model.CodeTemplate{},  // 代码模板
 		&model.DataSource{},    // 数据源
 		&model.Scheme{},        // 代码模板方法
+		&model.Variable{},      // 变量
 	)
 
 	if err != nil {

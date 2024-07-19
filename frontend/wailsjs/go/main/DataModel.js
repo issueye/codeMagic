@@ -10,8 +10,16 @@ export function Delete(arg1) {
   return window['go']['main']['DataModel']['Delete'](arg1);
 }
 
+export function DeleteVariable(arg1, arg2) {
+  return window['go']['main']['DataModel']['DeleteVariable'](arg1, arg2);
+}
+
 export function GetModelInfo(arg1) {
   return window['go']['main']['DataModel']['GetModelInfo'](arg1);
+}
+
+export function GetVariableList(arg1) {
+  return window['go']['main']['DataModel']['GetVariableList'](arg1);
 }
 
 export function List(arg1, arg2, arg3) {
@@ -28,6 +36,10 @@ export function RunCode(arg1) {
 
 export function SaveModelInfo(arg1, arg2) {
   return window['go']['main']['DataModel']['SaveModelInfo'](arg1, arg2);
+}
+
+export function SaveVariable(arg1, arg2) {
+  return window['go']['main']['DataModel']['SaveVariable'](arg1, arg2);
 }
 
 export function TestRunCode(arg1, arg2) {

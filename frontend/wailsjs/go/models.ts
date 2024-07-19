@@ -297,6 +297,68 @@ export namespace model {
 		    return a;
 		}
 	}
+	export class Variable {
+	    id: string;
+	    // Go type: time
+	    createdAt: any;
+	    // Go type: time
+	    updatedAt: any;
+	    md_id: string;
+	    key: string;
+	    value: string;
+	    mark: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new Variable(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.id = source["id"];
+	        this.createdAt = this.convertValues(source["createdAt"], null);
+	        this.updatedAt = this.convertValues(source["updatedAt"], null);
+	        this.md_id = source["md_id"];
+	        this.key = source["key"];
+	        this.value = source["value"];
+	        this.mark = source["mark"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class VariableBase {
+	    md_id: string;
+	    key: string;
+	    value: string;
+	    mark: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new VariableBase(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.md_id = source["md_id"];
+	        this.key = source["key"];
+	        this.value = source["value"];
+	        this.mark = source["mark"];
+	    }
+	}
 
 }
 
@@ -556,6 +618,7 @@ export namespace repository {
 	    icon: string;
 	    type: number;
 	    parentCode: string;
+	    path: string;
 	    children: SchemeTree[];
 	
 	    static createFrom(source: any = {}) {
@@ -569,6 +632,7 @@ export namespace repository {
 	        this.icon = source["icon"];
 	        this.type = source["type"];
 	        this.parentCode = source["parentCode"];
+	        this.path = source["path"];
 	        this.children = this.convertValues(source["children"], SchemeTree);
 	    }
 	

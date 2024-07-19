@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/dop251/goja"
+	"github.com/issueye/code_magic/backend/pkg/utils"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -14,7 +15,7 @@ type ConsoleCallBack func(args ...any)
 
 type console struct {
 	logger   *zap.Logger
-	CallBack ConsoleCallBack
+	CallBack []*ConsoleCallBack
 }
 
 type LogOutMode int
@@ -71,13 +72,18 @@ func newZap(path string, mod LogOutMode) (*zap.Logger, func(), error) {
 	return log, close, nil
 }
 
-func newConsole(log *zap.Logger, cb ConsoleCallBack) *console {
+func newConsole(log *zap.Logger, args ...*ConsoleCallBack) *console {
 	c := &console{logger: log}
-	c.CallBack = cb
+	c.CallBack = make([]*ConsoleCallBack, 0)
+	c.CallBack = append(c.CallBack, args...)
 	return c
 }
 
-func (c console) log(level zapcore.Level, args ...goja.Value) {
+func (c *console) SetCallBack(cb *ConsoleCallBack) {
+	c.CallBack = append(c.CallBack, cb)
+}
+
+func (c *console) log(level zapcore.Level, args ...goja.Value) {
 	var strs strings.Builder
 	for i := 0; i < len(args); i++ {
 		if i > 0 {
@@ -113,32 +119,34 @@ func (c console) log(level zapcore.Level, args ...goja.Value) {
 	}
 
 	// 写入回调
-	if c.CallBack != nil {
-		c.CallBack(flag, msg)
+	for _, cb := range c.CallBack {
+		if cb != nil {
+			(*cb)(flag, msg)
+		}
 	}
 }
 
-func (c console) Log(args ...goja.Value) {
+func (c *console) Log(args ...goja.Value) {
 	c.Info(args...)
 }
 
-func (c console) Debug(args ...goja.Value) {
+func (c *console) Debug(args ...goja.Value) {
 	c.log(zapcore.DebugLevel, args...)
 }
 
-func (c console) Info(args ...goja.Value) {
+func (c *console) Info(args ...goja.Value) {
 	c.log(zapcore.InfoLevel, args...)
 }
 
-func (c console) Warn(args ...goja.Value) {
+func (c *console) Warn(args ...goja.Value) {
 	c.log(zapcore.WarnLevel, args...)
 }
 
-func (c console) Error(args ...goja.Value) {
+func (c *console) Error(args ...goja.Value) {
 	c.log(zapcore.ErrorLevel, args...)
 }
 
-func (c console) valueString(v goja.Value) string {
+func (c *console) valueString(v goja.Value) string {
 	mv, ok := v.(json.Marshaler)
 	if !ok {
 		return v.String()
@@ -148,5 +156,5 @@ func (c console) valueString(v goja.Value) string {
 	if err != nil {
 		return v.String()
 	}
-	return string(b)
+	return utils.Bytes2String(b)
 }

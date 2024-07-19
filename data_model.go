@@ -78,6 +78,21 @@ func (lc *DataModel) Modify(data *repository.RequestModifyDataModel) error {
 	return srv.Modify(data)
 }
 
+// 获取变量列表
+func (lc *DataModel) GetVariableList(modelId string) ([]*model.Variable, error) {
+	return new(logic.DataModel).GetVariableList(modelId)
+}
+
+// 删除变量
+func (lc *DataModel) DeleteVariable(modelId string, variableId string) error {
+	return new(logic.DataModel).DeleteVariable(modelId, variableId)
+}
+
+// 保存变量
+func (lc *DataModel) SaveVariable(modelId string, variables []*model.VariableBase) error {
+	return new(logic.DataModel).AddOrUpdateVariable(modelId, variables)
+}
+
 // 运行代码
 func (lc *DataModel) RunCode(dmId string) error {
 	err := logic.NewCodeLogic(lc.Ctx).RunCode(dmId, false, "")

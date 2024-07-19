@@ -99,3 +99,36 @@ func (owner *DataModel) GetModelInfo(modelId string) ([]*model.ModelInfo, error)
 	list := make([]*model.ModelInfo, 0)
 	return list, owner.GetDB().Model(&model.ModelInfo{}).Where("data_model_id = ?", modelId).Find(&list).Error
 }
+
+func (owner *DataModel) CreateOrModify(modelId string, data *model.VariableBase) (err error) {
+	var info *model.Variable
+	info, err = owner.GetVarByKey(data.MDId, data.Key)
+	if err != nil {
+		return err
+	}
+
+	if info.Key == "" {
+		info = model.NewVariable(data)
+	} else {
+		info.Value = data.Value
+		info.Mark = data.Mark
+	}
+
+	info.MDId = modelId
+
+	return owner.GetDB().Model(&model.Variable{}).Where("md_id = ? and key = ?", modelId, data.Key).Save(info).Error
+}
+
+func (owner *DataModel) GetVarByKey(md_id, key string) (*model.Variable, error) {
+	info := &model.Variable{}
+	return info, owner.GetDB().Model(&model.Variable{}).Where("md_id = ? and key = ?", md_id, key).Find(info).Error
+}
+
+func (owner *DataModel) GetVarsByKey(md_id string) ([]*model.Variable, error) {
+	info := make([]*model.Variable, 0)
+	return info, owner.GetDB().Model(&model.Variable{}).Where("md_id = ?", md_id).Find(&info).Error
+}
+
+func (owner *DataModel) DelVarByKey(md_id, key string) error {
+	return owner.GetDB().Delete(&model.Variable{}, "md_id = ? and key = ?", md_id, key).Error
+}

@@ -22,6 +22,7 @@ type SchemeTree struct {
 	Icon       string        `json:"icon"`       // 图标
 	Type       int           `json:"type"`       // 0 跟节点 1 文件夹节点 2 文件节点
 	ParentCode string        `json:"parentCode"` // 父节点code
+	Path       string        `json:"path"`       // 路径
 	Children   []*SchemeTree `json:"children"`   //
 }
 

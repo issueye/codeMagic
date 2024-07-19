@@ -13,8 +13,6 @@ import (
 	"go.uber.org/zap"
 )
 
-var tsValue goja.Value
-
 type Code struct {
 	Path    string
 	Program *goja.Program
@@ -36,7 +34,8 @@ type JsVM struct {
 	// 对应文件的编译对象
 	proMap map[string]*Code
 	// ts pro
-	tsPro *goja.Program
+	tsPro   *goja.Program
+	console *console
 }
 
 type ModuleFunc = func(vm *goja.Runtime, module *goja.Object)
@@ -52,7 +51,7 @@ func NewJsVM(globalPath string, log *zap.Logger, TsPro *goja.Program, consoleCal
 	}
 
 	// 输出日志
-	console := newConsole(log, consoleCallBack)
+	console := newConsole(log)
 	o := jsVM.vm.NewObject()
 	o.Set("log", console.Log)
 	o.Set("debug", console.Debug)
@@ -60,6 +59,11 @@ func NewJsVM(globalPath string, log *zap.Logger, TsPro *goja.Program, consoleCal
 	o.Set("error", console.Error)
 	o.Set("warn", console.Warn)
 	jsVM.vm.Set("console", o)
+
+	jsVM.console = console
+	if consoleCallBack != nil {
+		console.CallBack = append(console.CallBack, &consoleCallBack)
+	}
 
 	var parserOpts []parser.Option
 	parserOpts = append(parserOpts, parser.WithDisableSourceMaps)
@@ -122,6 +126,10 @@ func (jv *JsVM) SetProperty(moduleName, key string, value any) {
 		mod = jv.pkg[moduleName]
 	}
 	mod[key] = value
+}
+
+func (jv *JsVM) SetConsoleCallBack(consoleCallBack ConsoleCallBack) {
+	jv.console.SetCallBack(&consoleCallBack)
 }
 
 func (jv *JsVM) Run(name string, pro *goja.Program) error {

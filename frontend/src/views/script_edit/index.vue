@@ -16,7 +16,8 @@
     <template #body>
       <div class="flex h-full w-full">
         <div class="w-[240px]" style="border-right: 1px solid #d9d9d9;">
-          <el-tree :data="schemeTree" class="w-[calc(100% - 5px)] py-[5px]" node-key="code" highlight-current :expand-on-click-node="false" accordion @node-click="onNodeClick">
+          <el-tree :data="schemeTree" class="w-[calc(100% - 5px)] py-[5px]" node-key="code" highlight-current
+            :expand-on-click-node="false" accordion @node-click="onNodeClick">
             <template #default="{ data }">
               <div class="flex items-center justify-between w-full">
                 <span class="flex grow items-center">
@@ -24,6 +25,7 @@
                     data.title
                   }}</span>
                 </span>
+                <el-link type="primary" v-if="showInport(data)" @click.stop="onImportClick(data)" class="mr-1">导入</el-link>
               </div>
             </template>
           </el-tree>
@@ -107,7 +109,7 @@ const editor2 = ref<any>(null);
 onMounted(async () => {
   const code = await GetCode(id.value as string);
 
-  editor.value = getEditer(code || '',editorContainer1);
+  editor.value = getEditer(code || '', editorContainer1);
   editor2.value = getEditer(selectCode.value, editorContainer2, true);
 
   // 设置快捷键 ctrl + s
@@ -166,6 +168,15 @@ const getEditer = (code: string, editor: Ref<any>, readOnly: boolean = false) =>
   });
 }
 
+const showInport = (data: repository.SchemeTree) => {
+  // 类型为2 path 中只能包含 common
+
+  if (data.type == 2) {
+    return data.path.indexOf("common") > -1;
+  }
+  return false;
+}
+
 const onTabClick = (value: any) => {
   console.log(value);
 }
@@ -173,6 +184,24 @@ const onTabClick = (value: any) => {
 const onBackClick = () => {
   router.push("/templates");
 };
+
+const onImportClick = (value: model.Scheme) => {
+  console.log('value', value);
+  let code = toRaw(editor.value).getValue();
+
+  let path = value.path
+  // 将 \ 替换为 /
+  path = path.replace(/\\/g, "/");
+  // 将文件后缀去除
+  path = path.replace(/\.[^/.]+$/, "");
+  // 将文件路径替换为导入的路径
+
+  code = `import {  } from '${path}'\n${code}`
+
+  toRaw(editor.value).setValue(code);
+
+  activeName.value = "001"
+}
 
 const onNodeClick = (value: any) => {
   console.log('value', value);

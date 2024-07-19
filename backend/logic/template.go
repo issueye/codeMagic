@@ -165,6 +165,7 @@ func (t *Template) createNode(info *model.Scheme) *repository.SchemeTree {
 		Icon:       info.Icon,
 		ParentCode: info.ParentCode,
 		Type:       info.NodeType,
+		Path:       info.Path,
 		Children:   make([]*repository.SchemeTree, 0),
 	}
 }

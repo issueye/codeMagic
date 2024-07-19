@@ -46,6 +46,14 @@ func (lc *CodeLogic) RunCode(dmId string, isTest bool, tpCodeId string) error {
 		return err
 	}
 
+	// 获取数据模板变量
+	runtime.EventsEmit(lc.ctx, CONSOLE_EVENT, fmt.Sprintf("开始获取模板[%s]变量", dmId))
+	varList, err := srv.GetVarsByKey(info.ID)
+	if err != nil {
+		runtime.EventsEmit(lc.ctx, CONSOLE_EVENT, fmt.Sprintf("获取模板[%s]变量失败 %s", dmId, err))
+		return err
+	}
+
 	// 获取模板明细信息
 	runtime.EventsEmit(lc.ctx, CONSOLE_EVENT, fmt.Sprintf("开始获取模板[%s]明细信息", dmId))
 	columns, err := srv.GetModelInfo(dmId)
@@ -58,15 +66,26 @@ func (lc *CodeLogic) RunCode(dmId string, isTest bool, tpCodeId string) error {
 	runtime.EventsEmit(lc.ctx, CONSOLE_EVENT, fmt.Sprintf("开始注入模板[%s]信息", dmId))
 
 	vm := global.JsVMCore.GetRuntime()
+	defer global.JsVMCore.PutRuntime(vm)
+
 	vm.SetProperty("dm", "title", info.Title)
 	vm.SetProperty("dm", "tableName", info.TBName)
 	vm.SetProperty("dm", "columns", columns)
-	vm.ConsoleCallBack = func(args ...any) {
-		// 去除第一个参数，第一个参数是日志级别
-		runtime.EventsEmit(lc.ctx, CONSOLE_EVENT, args[1])
+
+	// 注入变量
+	vars := make(map[string]any)
+	for _, variable := range varList {
+		fmt.Println("variable", variable)
+		vars[variable.Key] = variable.Value
 	}
 
-	// core.InitPool()
+	vm.SetProperty("dm", "vars", vars)
+
+	vm.SetConsoleCallBack(func(args ...any) {
+		fmt.Println("args", args)
+		// 去除第一个参数，第一个参数是日志级别
+		runtime.EventsEmit(lc.ctx, CONSOLE_EVENT, args[1])
+	})
 
 	// 获取代码模板的脚本
 	tpSrv := commonService.NewService(&service.Template{})
