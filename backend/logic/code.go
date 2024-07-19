@@ -75,14 +75,14 @@ func (lc *CodeLogic) RunCode(dmId string, isTest bool, tpCodeId string) error {
 	// 注入变量
 	vars := make(map[string]any)
 	for _, variable := range varList {
-		fmt.Println("variable", variable)
+		// fmt.Println("variable", variable)
 		vars[variable.Key] = variable.Value
 	}
 
 	vm.SetProperty("dm", "vars", vars)
 
 	vm.SetConsoleCallBack(func(args ...any) {
-		fmt.Println("args", args)
+		// fmt.Println("args", args)
 		// 去除第一个参数，第一个参数是日志级别
 		runtime.EventsEmit(lc.ctx, CONSOLE_EVENT, args[1])
 	})
