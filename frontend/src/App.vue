@@ -36,7 +36,7 @@ const isMaximised = ref(false);
       style="--wails-draggable: drag"
     >
       <div
-        class="mt-12 my-4 flex flex-col gap-6 text-2xl text-gray-500 dark:text-gray-200"
+        class="w-full mt-12 my-4 flex flex-col gap-6 text-2xl text-gray-500 dark:text-gray-200"
       >
         <div v-for="item in menu" :key="item.text">
           <el-tooltip effect="dark" :content="item.text" placement="right">
@@ -49,12 +49,14 @@ const isMaximised = ref(false);
       <div
         class="my-4 flex flex-col gap-4 text-2xl text-gray-500 dark:text-gray-200"
       >
-        <router-link to="/setup" v-slot="{ isActive }">
-          <Icon
-            icon="material-symbols:menu-rounded"
-            :class="isActive && activeClass"
-          />
-        </router-link>
+        <el-tooltip effect="dark" content="设置" placement="right">
+          <router-link to="/setup" v-slot="{ isActive }">
+            <Icon
+              icon="ant-design:setting-outlined"
+              :class="isActive && activeClass"
+            />
+          </router-link>
+        </el-tooltip>
       </div>
     </nav>
     <!-- 内容面板 -->

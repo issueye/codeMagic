@@ -1,31 +1,44 @@
+<template>
+  <BsHeader title="设置" description="一些设置的内容">
+    <template #actions>
+      <!-- <el-button type="primary" @click="onAddClick">添加</el-button>  -->
+    </template>
+  </BsHeader>
+  <BsMain :usePadding="false" :diffHeight="42">
+    <template #body>
+      <div class="w-full h-full flex">
+        <el-tabs tab-position="left" class="h-full" v-model="activeName">
+          <el-tab-pane label="字典设置" name="first">User</el-tab-pane>
+        </el-tabs>
+      </div>
+    </template>
+  </BsMain>
+
+  <!-- <BsDialog :title="title" :width="500" :visible="visible" @close="onClose" @save="onSave" @open="onOpen">
+    <template #body>
+      <el-form label-width="auto" :model="dataForm" :rules="rules" ref="dataFormRef">
+        <el-form-item label="标题" prop="title">
+          <el-input v-model="dataForm.title" placeholder="请输入数据模型标题" clearable />
+        </el-form-item>
+        <el-form-item label="文件名称" prop="fileName">
+          <el-input v-model="dataForm.fileName" placeholder="请输入文件名称" :disabled="true" clearable />
+        </el-form-item>
+        <el-form-item label="备注">
+          <el-input v-model="dataForm.mark" placeholder="请输入备注" type="textarea" :row="2" clearable />
+        </el-form-item>
+      </el-form>
+    </template>
+  </BsDialog> -->
+</template>
+
 <script lang="ts" setup>
-import router from "../router";
-import { Auth } from "../store/store";
+import { ref } from "vue";
 
-// 退出登录按钮样式
-const butClass =
-  "text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br  shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center active:scale-95";
-
-// 退出登录
-function logout() {
-  localStorage.removeItem("token");
-  Auth.logged = false; // 退出登录后，isAuth 置为 false
-  router.push("/login");
-}
+const activeName = ref("first");
 </script>
 
-<template>
-  <section class="space-y-4">
-    <div class="flex gap-4 items-center">
-      <img src="../assets/vue.svg" alt="logo" class="w-10 h-10 select-none" />
-      <h1 class="text-2xl">Wails And Vue3</h1>
-    </div>
-
-    <div class="flex items-end gap-4">
-      <p>版本：v1.0</p>
-      <p class="p-1 text-sm bg-slate-100 rounded-lg text-red-400">有新版本</p>
-    </div>
-
-    <button :class="butClass" @click="logout">退出登录</button>
-  </section>
-</template>
+<style scoped>
+::v-deep(.el-tabs__nav) {
+  width: 200px;
+}
+</style>
